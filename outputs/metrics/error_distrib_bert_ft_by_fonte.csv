@@ -1,0 +1,16 @@
+Fonte,N,Erros,Taxa erro,Acc,F1
+politica.estadao.com.br,256,25,0.0977,0.9023,0.4743
+projetocomprova.com.br,173,13,0.0751,0.9249,0.4805
+noticias.uol.com.br,1835,108,0.0589,0.9411,0.9255
+boatos.org,1695,79,0.0466,0.9534,0.4881
+economia.uol.com.br,54,2,0.037,0.963,0.4906
+aosfatos.org,477,17,0.0356,0.9644,0.4909
+e-farsas.com,717,24,0.0335,0.9665,0.4915
+g1.globo.com,1135,30,0.0264,0.9736,0.9722
+checamos.afp.com,320,5,0.0156,0.9844,0.4961
+uol.com.br,131,2,0.0153,0.9847,0.4962
+extra.globo.com,212,3,0.0142,0.9858,0.4964
+lupa.uol.com.br,644,6,0.0093,0.9907,0.4977
+cnnbrasil.com.br,276,1,0.0036,0.9964,0.4991
+gov.br,42,0,0.0,1.0,1.0
+estadao.com.br,16,0,0.0,1.0,1.0

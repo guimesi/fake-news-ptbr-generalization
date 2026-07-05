@@ -1,0 +1,3 @@
+Setup,Accuracy,F1,Δ F1
+"ORIGINAL (fake cru, real sumarizado)",0.9611,0.9611,0.0
+EQUALIZADO (ambos sumarizados),0.96,0.96,-0.0011

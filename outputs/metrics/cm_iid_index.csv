@@ -1,0 +1,18 @@
+Modelo,tn,fp,fn,tp,saved_as
+TFIDF+LogReg,4897,348,369,4857,cm_iid_tfidf_logreg
+TFIDF+SVM,4949,296,330,4896,cm_iid_tfidf_svm
+TFIDF+MLP,4975,270,346,4880,cm_iid_tfidf_mlp
+BERT[CLS]+LogReg,4875,370,423,4803,cm_iid_bertcls_logreg
+BERT[CLS]+SVM,4883,362,408,4818,cm_iid_bertcls_svm
+BERT[CLS]+MLP,4913,332,339,4887,cm_iid_bertcls_mlp
+CNN,5036,209,219,5007,cm_iid_cnn
+LSTM,5000,245,176,5050,cm_iid_lstm
+ConvLSTM,5024,221,219,5007,cm_iid_convlstm
+Ens2 (CNN+LSTM),5027,218,189,5037,cm_iid_ens2_cnn_lstm
+Ens3 (CNN+LSTM+ConvLSTM),5029,216,190,5036,cm_iid_ens3_cnn_lstm_convlstm
+WEns2 (α=0.50),5027,218,189,5037,cm_iid_wens2_alpha050
+WEns3 (0.5/0.2/0.3),5039,206,201,5025,cm_iid_wens3_05_02_03
+BERTimbau FT,5074,171,226,5000,cm_iid_bertimbau_ft
+PLM: bert-large-portuguese-cased,5023,222,200,5026,cm_iid_plm_bert-large-portuguese-cased
+PLM: xlm-roberta-base,5070,175,408,4818,cm_iid_plm_xlm-roberta-base
+PLM: mdeberta-v3-base,5035,210,629,4597,cm_iid_plm_mdeberta-v3-base

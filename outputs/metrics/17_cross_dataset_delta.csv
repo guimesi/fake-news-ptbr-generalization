@@ -1,0 +1,3 @@
+Model,OOD corpus,F1 IID,F1 OOD,ΔF1 (IID-OOD)
+Ens3,Fake.br [labels invertidos auto],0.9612,0.6679,0.2933
+Ens3,Extrativa,0.9612,0.9711,-0.0098

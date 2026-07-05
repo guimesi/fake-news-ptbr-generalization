@@ -1,0 +1,9 @@
+Model,Perturbation,N,F1_orig,F1_pert,flip_rate,ΔF1
+Ens3,Typos (5%),500,0.9496,0.9496,0.012,-0.0
+BERT FT,Typos (5%),500,0.8688,0.8647,0.044,0.0041
+Ens3,Word deletion (10%),500,0.9496,0.9352,0.03,0.0144
+BERT FT,Word deletion (10%),500,0.8688,0.8583,0.054,0.0105
+Ens3,Word swap (5%),500,0.9496,0.9415,0.02,0.0081
+BERT FT,Word swap (5%),500,0.8688,0.8809,0.024,-0.012
+Ens3,Back-translation (300 sample),300,0.9493,0.8936,0.08,0.0557
+BERT FT,Back-translation (300 sample),300,0.8607,0.7885,0.13,0.0722

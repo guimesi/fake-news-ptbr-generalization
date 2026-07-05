@@ -1,0 +1,43 @@
+# Dependências do projeto FakeRecogna 2.0.
+# Caso alguma combinação falhe no seu ambiente, libere as restrições de versão
+# começando pelas mais recentes.
+
+# --- Núcleo numérico / científico ---
+numpy>=1.24,<2.0
+pandas>=2.0
+scipy>=1.10
+scikit-learn>=1.3
+statsmodels>=0.14
+PyYAML>=6.0
+
+# --- Visualização ---
+matplotlib>=3.7
+seaborn>=0.12
+tabulate>=0.9
+tqdm>=4.65
+
+# --- NLP / texto ---
+nltk>=3.8
+spacy>=3.6
+# Modelo spaCy PT (faça `python -m spacy download pt_core_news_sm` após instalar)
+datasets>=2.14
+datasketch>=1.6
+sumy>=0.11   # TextRank (paraphrasing equalizer)
+sentencepiece>=0.1.99  # XLM-R / mDeBERTa
+protobuf>=4.21
+
+# --- Deep learning ---
+torch>=2.0
+transformers>=4.35
+# Opcional, dependendo do PLM:
+# accelerate>=0.24
+
+# --- XAI ---
+lime>=0.2.0.1
+captum>=0.7
+
+# --- IO de planilhas (algumas saídas em xlsx) ---
+openpyxl>=3.1
+
+# --- Testes ---
+pytest>=7.4

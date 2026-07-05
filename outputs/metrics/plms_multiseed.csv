@@ -1,0 +1,4 @@
+Model,F1_mean,F1_std,Acc_mean,Acc_std,seeds
+PLM: bert-large-portuguese-cased,0.960653,0.00135,0.960653,0.001351,"[42, 7]"
+PLM: xlm-roberta-base,0.945195,0.00128,0.94523,0.001283,"[42, 7]"
+PLM: mdeberta-v3-base,0.916932,0.003962,0.917057,0.003984,"[42, 7]"

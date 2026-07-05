@@ -1,0 +1,75 @@
+# =============================================================================
+# FakeRecogna 2.0: Configuração centralizada do experimento
+#
+# Mude valores aqui em vez de em código. Hiperparâmetros marcados como
+# CRÍTICOS definem o protocolo experimental, não altere a menos que esteja
+# conduzindo um experimento novo.
+# =============================================================================
+
+experiment:
+  # CRÍTICO: seed determinística do experimento. Não alterar.
+  seed: 42
+  # CRÍTICO: seeds para multi-seed averaging (CIs nos modelos deep). Não alterar.
+  seeds_multi: [42, 7, 2024]
+
+data:
+  # Template do dataset principal (HuggingFace Hub). `{variant}` é substituído
+  # por 'abstrativa' ou 'extrativa' em data.loading.load_fakerecogna.
+  hf_id_template: "recogna-nlp/fakerecogna2-{variant}"
+  # Mapeamento alternativo de colunas (heurística defensiva)
+  text_columns_abstrativa: ["news_text_full", "text", "noticia"]
+  text_columns_extrativa: ["news_text_short", "summary", "resumo"]
+  label_column: "label"
+  # Fake.br-Corpus local: usado nos experimentos cross-dataset.
+  # Baixe de https://github.com/roneysco/Fake.br-Corpus e extraia neste path.
+  fakebr_local_path: "data/external/Fake.br-Corpus-master"
+
+splits:
+  test_size: 0.20
+  val_size: 0.10
+
+models:
+  # CRÍTICO: backbone BERTimbau e hparams compartilhados. Não alterar.
+  bertimbau: "neuralmind/bert-base-portuguese-cased"
+  max_len: 200
+  # batch_size das redes neurais profundas (CNN/LSTM/ConvLSTM). O fine-tuning do
+  # BERTimbau e dos PLMs maiores usa batch 16 internamente (default de
+  # train_bert_classifier / train_bertimbau_finetune / plm_finetune).
+  batch_size: 32
+  num_epochs: 10
+  learning_rate: 2.0e-5
+  patience: 3
+  # PLMs maiores avaliados na seção de modelos
+  plm_candidates:
+    - "neuralmind/bert-large-portuguese-cased"
+    - "xlm-roberta-base"
+    - "microsoft/mdeberta-v3-base"
+
+evaluation:
+  # Número de reamostragens do bootstrap para CIs (F1 e Acc).
+  bootstrap_iters: 10000
+  # Bins do Expected Calibration Error (ECE).
+  calibration_bins: 15
+  # Bins do diagrama de confiabilidade (visual). Pode diferir do ECE.
+  reliability_bins: 10
+  # Folds da validação cruzada estratificada.
+  cv_folds: 5
+
+adversarial:
+  # Modelos MarianMT/OPUS-MT para retrotradução PT↔EN.
+  pt_to_en_model: "Helsinki-NLP/opus-mt-roa-en"
+  en_to_pt_model: "Helsinki-NLP/opus-mt-en-roa"
+  # Taxas de perturbação por tipo (não confundir com "níveis": cada tipo tem
+  # uma taxa fixa que define a intensidade do ruído).
+  typo_rate: 0.05
+  deletion_rate: 0.10
+  swap_rate: 0.05
+  # Tamanhos de amostra para os experimentos adversariais.
+  perturb_sample_size: 500     # típos, deleção e swap
+  bt_sample_size: 300          # retrotradução
+
+paths:
+  artifacts_dir: "outputs"
+  data_raw: "data/raw"
+  data_processed: "data/processed"
+  data_interim: "data/interim"

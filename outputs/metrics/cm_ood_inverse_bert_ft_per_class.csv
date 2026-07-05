@@ -1,0 +1,4 @@
+Classe,Precision,Recall,F1,Support
+fake,0.866,0.829,0.8471,5245
+real,0.8354,0.8712,0.8529,5226
+macro avg,0.8507,0.8501,0.85,10471

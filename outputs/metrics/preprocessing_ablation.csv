@@ -1,0 +1,4 @@
+Preprocessamento,Accuracy,F1,Vocab
+Base (stopwords),0.929,0.929,20000
+Stemming (RSLP),0.9287,0.9287,20000
+Lemmatização (spaCy),0.933,0.933,20000
