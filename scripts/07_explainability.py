@@ -1,26 +1,4 @@
-"""Etapa 7: explicabilidade (LIME, Integrated Gradients e Attention Rollout).
-
-Treina os modelos neurais e o BERTimbau FT, seleciona exemplos da matriz de
-confusão e gera as explicações: LIME para o ensemble Ens3, comparação Integrated
-Gradients vs Attention Rollout (salvo `--skip-ig`) e o teste de estabilidade do
-LIME por Jaccard (salvo `--skip-stability`).
-
-Observação: este script usa `select_lime_targets` (TP/FN) e não agrega tokens
-por TP/TN/FP/FN. A versão estratificada por 4 células (usada no artigo) está no
-run_all.py (etapa 9). O `ensemble_predict_proba` interno aqui não é batcheado, o
-que pode consumir mais memória em corpora grandes.
-
-Pré-requisitos: nenhum script anterior (treina internamente; o BERTimbau FT é
-necessário para IG/Attention). GPU recomendada.
-
-Saídas:
-    outputs/metrics/15_lime_records.csv, 15_lime_tokens_by_tag.csv,
-    I_lime_stability.csv; figuras em outputs/figures/lime/
-
-Uso:
-    python scripts/07_explainability.py
-    python scripts/07_explainability.py --n-lime 12 --skip-stability
-"""
+"""Etapa 7 — XAI: LIME (Seção 15) + IG/Attention (Seção 18) + estabilidade (Seção I)."""
 
 from __future__ import annotations
 

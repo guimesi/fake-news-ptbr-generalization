@@ -3,6 +3,8 @@
 Cruza explicabilidade local (LIME por exemplo, agregada por TP/TN/FP/FN) com
 estratificacao de erros por dimensao (fonte, categoria, ano, confianca).
 
+Cobre o item 60 do STATUS.md: 'integracao XAI <-> erros consolidada'.
+
 Artefatos gerados:
   - `xai_err_cell_per_example.csv`: tabela por exemplo (idx, true, pred, cell,
     source, category, year, confidence).
@@ -23,7 +25,6 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from ..config import TABLES_DIR
 from ..explainability.lime_explainer import _parse_lime_features
 from ..utils.io_utils import save_table
 from ..utils.logging_utils import get_logger
@@ -256,7 +257,7 @@ def consolidate_xai_errors(
             md_lines.append(f"- **{cat} / {cell}**: " + ", ".join(top5))
         md_lines.append("")
 
-    md_path = TABLES_DIR / f"{save_as_prefix}_consolidated.md"
+    md_path = Path("outputs/metrics") / f"{save_as_prefix}_consolidated.md"
     md_path.parent.mkdir(parents=True, exist_ok=True)
     md_path.write_text("\n".join(md_lines), encoding="utf-8")
     log.info(f"[xai-err] relatorio markdown salvo: {md_path.name}")

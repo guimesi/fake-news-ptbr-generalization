@@ -1,4 +1,4 @@
-"""Comparação visual IG × Attention Rollout."""
+"""Comparação visual IG × Attention Rollout (Seção 18.3, cell 67)."""
 
 from __future__ import annotations
 
@@ -59,7 +59,7 @@ def compare_xai_for_examples(
             ax.set_yticks(range(len(toks_)))
             ax.set_yticklabels(toks_)
             ax.set_title(
-                f"{title}: {tag}\nTrue={class_names[true_cls]} Pred={class_names[pred_cls]}"
+                f"{title} — {tag}\nTrue={class_names[true_cls]} Pred={class_names[pred_cls]}"
             )
             ax.axvline(0, color="k", lw=0.5)
             ax.grid(axis="x", alpha=0.3)

@@ -1,21 +1,4 @@
-"""Etapa 10: fine-tuning de PLMs maiores (BERTimbau-large, XLM-R, mDeBERTa-v3).
-
-Faz o fine-tuning e a avaliação dos três PLMs candidatos definidos em
-`models.plm_candidates` (configs/config.yaml). Rodado isolado, este script usa
-uma única seed; o run_all.py roda multi-seed via `--trans-seeds`.
-
-Pré-requisitos: nenhum script anterior (só precisa de textos e labels, não dos
-embeddings BERTimbau base). Baixa vários GB de modelos na primeira execução
-(BERTimbau-large ~1.3 GB, XLM-R ~1.1 GB, mDeBERTa ~0.7 GB). GPU fortemente
-recomendada.
-
-Saídas (outputs/metrics/): 20_larger_models.csv (e plms_multiseed.csv no caminho
-multi-seed), mais as matrizes de confusão por PLM.
-
-Uso:
-    python scripts/10_plm_finetune.py
-    python scripts/10_plm_finetune.py --epochs 4 --es-patience 2
-"""
+"""Etapa 10 — PLMs maiores (BERTimbau-large, XLM-R, mDeBERTa) — Seção 20."""
 
 from __future__ import annotations
 
@@ -31,13 +14,11 @@ from _pipeline import prepare_through_preprocessing
 
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--epochs", type=int, default=4,
-                   help="Épocas de fine-tuning por PLM (default 4).")
-    p.add_argument("--es-patience", type=int, default=2,
-                   help="Paciência do early stopping (default 2).")
+    p.add_argument("--epochs", type=int, default=4)
+    p.add_argument("--es-patience", type=int, default=2)
     args = p.parse_args()
 
-    # PLMs precisam só de textos e labels, não dos embeddings BERTimbau-base
+    # PLMs precisam só de textos e labels — não dos embeddings BERTimbau-base
     ctx = prepare_through_preprocessing()
 
     from fakerecogna2.models import evaluate_plm_candidates

@@ -1,4 +1,4 @@
-"""Análise de erros: por classe, por comprimento, por fonte."""
+"""Análise de erros: por classe, por comprimento, por fonte (cell 51)."""
 
 from __future__ import annotations
 
@@ -56,7 +56,7 @@ def performance_by_length(
             rows.append(
                 {
                     "Faixa": nm,
-                    "Tokens": f"{int(bins[i])}-{int(bins[i+1]-1)}",
+                    "Tokens": f"{int(bins[i])}–{int(bins[i+1]-1)}",
                     "N": int(mk.sum()),
                     "Acc": accuracy_score(y_test[mk], predictions[mk]),
                     "F1": f1_score(
@@ -81,6 +81,9 @@ def error_distribution_full(
     save_as_prefix: str = "error_distrib",
 ) -> dict[str, pd.DataFrame]:
     """Distribuicao de erros por fonte, categoria, ano e confianca.
+
+    Atende Cap. 5.9: 'distribuicao de erros por classe, fonte, ano,
+    comprimento e confianca preditiva'.
 
     Args:
         df_test_meta: DataFrame de teste com colunas opcionais
@@ -185,7 +188,7 @@ def error_distribution_full(
             err_rate = n_err / n_tot
             rows.append({
                 "Quartil_conf": nm,
-                "Faixa": f"{bins[i]:.3f}-{bins[i+1]:.3f}",
+                "Faixa": f"{bins[i]:.3f}–{bins[i+1]:.3f}",
                 "N": n_tot,
                 "Erros": n_err,
                 "Taxa erro": round(err_rate, 4),

@@ -1,17 +1,6 @@
-"""Etapa 3: baselines clássicos (LogReg / LinearSVC / MLP) sobre TF-IDF e BERT[CLS].
+"""Etapa 3 — Baselines clássicos (LogReg / LinearSVC / MLP) em TF-IDF e BERT[CLS].
 
-Treina os 6 baselines (3 classificadores sklearn por 2 conjuntos de features:
-TF-IDF e o vetor [CLS] do BERTimbau) e registra as métricas no cache global
-`RESULTS` (outputs/.cache/results.json). Os objetos treinados ficam em
-`ctx.extras` apenas em memória.
-
-Pré-requisitos: nenhum script anterior (extrai internamente o TF-IDF e os
-embeddings [CLS]). Este script não tem flags e não grava CSV próprio: a tabela
-consolidada dos baselines é montada pela etapa 5 / run_all.py a partir de
-`RESULTS` (e `baselines_multiseed.csv` só sai no run_all.py).
-
-Uso:
-    python scripts/03_train_baselines.py
+Cobre a Seção 8 do notebook (cell 29).
 """
 
 from __future__ import annotations

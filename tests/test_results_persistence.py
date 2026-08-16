@@ -147,7 +147,7 @@ def test_results_handles_numpy_types():
             "N": np.int64(1000),
             "preds": np.array([0, 1, 0, 1]),
         }
-        # Lê de volta, não deve falhar
+        # Lê de volta — não deve falhar
         data = json.loads(cache_file.read_text(encoding="utf-8"))
         assert "np_model" in data
         assert abs(data["np_model"]["F1"] - 0.9234) < 1e-4

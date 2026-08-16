@@ -43,7 +43,7 @@ def run(
         text_col/out_col: nomes das colunas de entrada/saída.
     """
     if ctx.df is None:
-        raise RuntimeError("ctx.df está vazio, rode `data.run_pipeline(ctx)` antes.")
+        raise RuntimeError("ctx.df está vazio — rode `data.run_pipeline(ctx)` antes.")
 
     ctx.df = apply_preprocessing(ctx.df, text_col=text_col, out_col=out_col, method=method)
     if "df_extr" in ctx.extras and isinstance(ctx.extras["df_extr"], pd.DataFrame):
@@ -60,7 +60,7 @@ def run(
         ctx.y_val = np.asarray(y_vl)
         ctx.y_test = np.asarray(y_te)
         # Metadata do teste (source, category, date_parsed) para analise
-        # de erros estratificada.
+        # de erros estratificada (Cap. 5.9).
         ctx.extras["df_test_meta"] = df_test_meta
 
         temporal = make_temporal_splits(ctx.df)

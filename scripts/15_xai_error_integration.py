@@ -1,4 +1,4 @@
-"""Relatorio consolidado de integracao XAI <-> erros (modo standalone).
+"""Relatorio consolidado de integracao XAI <-> erros (item 60 do STATUS.md).
 
 Modo standalone: usa os CSVs ja gerados pelo `run_all.py` em
 `outputs/metrics/`. Nao requer recarregar modelos ou re-executar predicoes.
@@ -168,8 +168,8 @@ def main() -> int:
         "",
         "Use este relatorio para responder perguntas como:",
         "",
-        "1. **Quais categorias concentram erros?** Cruze a distribuicao por",
-        "   categoria com as de ano e fonte para verificar se uma categoria",
+        "1. **Quais categorias concentram erros?** Cruze a Secao 1/2 com a",
+        "   Secao 5 (ano) e a Secao 4 (fonte) para verificar se uma categoria",
         "   especifica esta associada a uma fonte/ano com cobertura desigual.",
         "",
         "2. **Os tokens LIME refletem viseis de dominio?** Se TP/TN (acertos)",

@@ -1,6 +1,6 @@
 """Splits estratificados de treino/validação/teste.
 
-Oferece três estratégias:
+Cobre a célula 23 do notebook (Seção 6.1). Oferece três estratégias:
 - `make_random_splits`: split estratificado clássico (70/10/20).
 - `make_temporal_splits`: split por tempo (treino antigo, teste recente).
 - `make_source_splits`: split out-of-distribution por fonte (GroupShuffleSplit).

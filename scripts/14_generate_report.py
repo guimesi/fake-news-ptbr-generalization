@@ -1,7 +1,7 @@
-"""Etapa 14: Relatório consolidado (Markdown + JSON).
+"""Etapa 14 — Relatório consolidado (Markdown + JSON).
 
 Lê todos os CSVs em outputs/metrics/ e o dict RESULTS, gera relatório
-consolidado. Não precisa retreinar nada, só requer que os scripts anteriores
+consolidado. Não precisa retreinar nada — só requer que os scripts anteriores
 tenham deixado artefatos em outputs/.
 
 Uso::
@@ -48,7 +48,7 @@ def main() -> int:
             class_names=class_names, device=ctx.device,
         )
     else:
-        # Modo light: só lê CSVs já existentes
+        # Modo light — só lê CSVs já existentes
         ctx = setup_context()
         build_consolidated_report(device=ctx.device)
         build_results_json(device=ctx.device)

@@ -1,4 +1,4 @@
-pred_fake,pred_real,Total_true
-59,5186,5245
-1124,4102,5226
-1183,9288,10471
+pred_real,pred_fake,Total_true
+3788,1457,5245
+1803,3423,5226
+5591,4880,10471

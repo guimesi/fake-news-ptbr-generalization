@@ -1,4 +1,4 @@
-"""Stress tests: split por fonte, NER masking, split temporal.
+"""Stress tests: split por fonte, NER masking, split temporal (cells 46, 47, 48).
 
 A maior parte da orquestração (treinar CNN+LSTM em splits alternativos) é
 delegada pra `models.train_ensemble_on_variant`. Aqui ficam só as utilidades
@@ -112,7 +112,7 @@ def compare_split_results(
     variant_label: str = "Source-split",
     save_as: str | None = None,
 ) -> pd.DataFrame:
-    """Tabelinha Random vs Variant (Acc, F1): usada por split por fonte e split temporal."""
+    """Tabelinha Random vs Variant (Acc, F1) — usada por split por fonte e split temporal."""
     df = pd.DataFrame(
         [
             {"Split": baseline_label, "Accuracy": baseline_acc, "F1": baseline_f1},

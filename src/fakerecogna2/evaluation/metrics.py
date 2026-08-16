@@ -1,6 +1,6 @@
-"""Wrappers finos sobre sklearn.metrics.
+"""Wrappers finos sobre sklearn.metrics, idênticos aos imports da célula 1.2.
 
-Usa `average='macro'` por padrão.
+Mantém a assinatura usada no notebook (`average='macro'` por padrão).
 """
 from sklearn.metrics import (
     accuracy_score, precision_score, recall_score, f1_score,
@@ -12,7 +12,7 @@ import numpy as np
 
 
 def standard_report(y_true, y_pred, average: str = "macro") -> dict:
-    """Conjunto canônico de métricas."""
+    """Conjunto canônico de métricas — equivalente ao usado pelo notebook."""
     return {
         "accuracy": float(accuracy_score(y_true, y_pred)),
         "precision": float(precision_score(y_true, y_pred, average=average, zero_division=0)),

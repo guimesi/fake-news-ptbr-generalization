@@ -1,19 +1,13 @@
-"""Etapa 4: modelos neurais (CNN/LSTM/ConvLSTM multi-seed), ensembles e BERTimbau FT.
+"""Etapa 4 — Modelos deep (CNN/LSTM/ConvLSTM multi-seed) + ensembles + BERTimbau FT.
 
-Treina as três arquiteturas neurais sobre os embeddings token-level do
-BERTimbau (multi-seed), monta os ensembles (Ens2, Ens3, e os ponderados WEns2 e
-WEns3 com grid search de pesos na validação) e, salvo `--no-bert`, faz o
-fine-tuning do BERTimbau base. As métricas vão para o cache `RESULTS`. A ablação
-extrativa (controle) não roda aqui: ela está no run_all.py / etapa 13.
+Cobre Seções 9 (arquiteturas + treino), 10 (ensembles), 11 (BERT FT) e 12
+(ensemble extrativa) do notebook.
 
-Pré-requisitos: nenhum script anterior (refaz setup + embeddings). GPU
-recomendada. Não grava CSV próprio (métricas em RESULTS); o
-`bertimbau_ft_multiseed.csv` só é gerado no caminho multi-seed do run_all.py.
+Uso::
 
-Uso:
-    python scripts/04_train_deep_models.py                # padrão
-    python scripts/04_train_deep_models.py --no-bert      # pula o BERTimbau FT
-    python scripts/04_train_deep_models.py --epochs 5     # debug rápido
+    python scripts/04_train_deep_models.py                    # padrão
+    python scripts/04_train_deep_models.py --no-bert          # pula BERT FT
+    python scripts/04_train_deep_models.py --epochs 5         # debug rápido
 """
 
 from __future__ import annotations
@@ -33,8 +27,7 @@ def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--no-bert", action="store_true", help="Pula BERTimbau FT.")
     p.add_argument("--epochs", type=int, default=30, help="Épocas dos modelos deep.")
-    p.add_argument("--bert-epochs", type=int, default=10,
-                   help="Épocas do fine-tuning do BERTimbau (default 10).")
+    p.add_argument("--bert-epochs", type=int, default=10)
     args = p.parse_args()
 
     ctx = prepare_through_features()

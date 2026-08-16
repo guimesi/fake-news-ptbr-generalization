@@ -1,23 +1,14 @@
-"""Pipeline completo: executa todas as etapas em um único processo.
+"""Pipeline completo — executa todas as etapas em um único processo.
 
-Esta é a forma recomendada de reproduzir o experimento inteiro. Compartilha o
-`ExperimentContext` entre as etapas, então não há overhead de re-extrair
-embeddings ou re-treinar modelos entre passos consecutivos. Ao final, gera todas
-as tabelas (outputs/metrics/), figuras (outputs/figures/) e o relatório
-consolidado (outputs/relatorio_final.md e outputs/resultados.json).
+Compartilha o `ExperimentContext` entre etapas (não há overhead de re-extrair
+embeddings ou re-treinar modelos entre passos consecutivos).
 
-Uso típico:
+Uso típico::
 
     python scripts/run_all.py                     # tudo (pode levar 3-4h em GPU)
-    python scripts/run_all.py --quick             # pula cross/PLM/adv/ablações/paraphr
+    python scripts/run_all.py --quick             # skip cross/PLM/adv/ablações/paraphr
     python scripts/run_all.py --skip-plm          # pula PLMs maiores (lento)
     python scripts/run_all.py --skip-bt           # pula back-translation (lento)
-    python scripts/run_all.py --skip-xai          # pula LIME/IG/Attention Rollout
-    python scripts/run_all.py --skip-cv           # pula 5-fold CV (caro)
-    python scripts/run_all.py --trans-seeds 42    # 1 seed nos Transformers (mais rápido)
-
-Flags disponíveis: --quick, --skip-plm, --skip-bt, --skip-cross, --skip-adv,
---skip-ablations, --skip-xai, --skip-paraphr, --skip-cv, --epochs, --trans-seeds.
 
 Para rodar apenas uma etapa, use o script numerado correspondente
 (`python scripts/04_train_deep_models.py`).
@@ -64,8 +55,7 @@ def main() -> int:
     p.add_argument("--skip-xai", action="store_true", help="Pula XAI (LIME/IG/Attention).")
     p.add_argument("--skip-paraphr", action="store_true", help="Pula paraphrasing equalizer.")
     p.add_argument("--skip-cv", action="store_true", help="Pula 5-fold CV (caro).")
-    p.add_argument("--epochs", type=int, default=30,
-                   help="Épocas dos modelos neurais (default 30).")
+    p.add_argument("--epochs", type=int, default=30)
     p.add_argument("--trans-seeds", type=int, nargs="+", default=[42, 7],
                    help="Sementes para multi-seed dos Transformers FT (BERTimbau-base/large, XLM-R, mDeBERTa). Default [42, 7].")
     args = p.parse_args()
@@ -87,7 +77,7 @@ def main() -> int:
     )
     class_names = ctx.extras.get("class_names", ["fake", "real"])
 
-    # 2. Análise lexical (log-odds Dirichlet + Chi²), gera CSVs pro relatório
+    # 2. Análise lexical (log-odds Dirichlet + Chi²) — gera CSVs pro relatório
     _section("2. Análise lexical (log-odds + Chi²)")
     from fakerecogna2.statistics import chi2_top, lex_analysis
     ctx.extras["lex_abst"] = lex_analysis(ctx.df, name="abstrativa")
@@ -112,7 +102,8 @@ def main() -> int:
     trained_baselines, _ = train_baselines(configs, ctx.y_train, ctx.y_test)
     ctx.extras["baseline_configs"] = trained_baselines
 
-    # 3b. Baselines multi-seed (3 sementes) - mean+/-std
+    # 3b. Baselines multi-seed (3 sementes) - mean+/-std para sustentar
+    # afirmacoes de estabilidade no Cap. 5
     _section("3b. Baselines multi-seed (3 sementes)")
     df_bl_ms = train_baselines_multiseed(
         ctx.X_train_tfidf, ctx.X_test_tfidf,
@@ -169,7 +160,7 @@ def main() -> int:
 
     bootstrap_table(ctx.y_test, ctx.predictions)
 
-    # 6b. Matrizes de confusao IID + metricas por classe
+    # 6b. Matrizes de confusao IID + metricas por classe (Cap. 5.3)
     # Gera cm_iid_<model>_cm.csv/png e _per_class.csv para os 17 modelos
     save_all_cms(
         ctx.y_test, ctx.predictions, class_names,
@@ -269,7 +260,7 @@ def main() -> int:
             baseline_label="Random", variant_label="By-Source",
             save_as="14_source_split",
         )
-        # CM do split by-source
+        # CM do split by-source (Cap. 5.4)
         save_cm(
             ys_te, src_res["y_pred"], model_name="Ens2 (CNN+LSTM)",
             class_names=class_names, save_as_prefix="cm_source",
@@ -307,7 +298,7 @@ def main() -> int:
             baseline_label="Random", variant_label="Temporal",
             save_as="14_temporal_split",
         )
-        # CM do split temporal
+        # CM do split temporal (Cap. 5.4)
         save_cm(
             yt_te, tmp_res["y_pred"], model_name="Ens2 (CNN+LSTM)",
             class_names=class_names, save_as_prefix="cm_temporal",
@@ -315,6 +306,8 @@ def main() -> int:
         )
 
     # 8d. Split anti-vies (categoria x periodo)
+    # Cap. 6 secao 7.4: 'particionamento que reduza diferencas sistematicas
+    # entre classes' por topico e periodo.
     if "category" in ctx.df.columns or "date_parsed" in ctx.df.columns:
         _section("8d. Split anti-vies (categoria x periodo)")
         from fakerecogna2.data import make_anti_bias_splits
@@ -360,7 +353,7 @@ def main() -> int:
 
     ens3_preds = ctx.predictions["Ens3 (CNN+LSTM+ConvLSTM)"]
 
-    # 9. XAI - TP/TN/FP/FN + tokens agregados
+    # 9. XAI - TP/TN/FP/FN (Secao 5.10 do Cap. 5) + tokens agregados
     if not args.skip_xai:
         _section("9. XAI: LIME + IG + Attention Rollout (TP/TN/FP/FN)")
         from fakerecogna2.explainability import (
@@ -368,7 +361,7 @@ def main() -> int:
             compare_xai_for_examples, lime_stability,
             run_lime_explanations, select_lime_targets_4cells,
         )
-        # 4 celulas x 3 exemplos = 12 (amplia para TP/TN/FP/FN)
+        # 4 celulas x 3 exemplos = 12 (Cap. 5.10: amplia para TP/TN/FP/FN)
         targets = select_lime_targets_4cells(
             ctx.y_test, ens3_preds, class_names,
             positive_class_idx=0, n_per_bucket=3,
@@ -417,12 +410,13 @@ def main() -> int:
                     )
                 )
 
-        # CM cross-dataset - antes de remover y_true/y_pred para CSV
+        # CM cross-dataset (Cap. 5.6) - antes de remover y_true/y_pred para CSV.
+        # Nomes semânticos na convenção canônica (0=real, 1=fake).
         for r in results:
             if "y_true" in r and "y_pred" in r:
                 save_cm(
                     r["y_true"], r["y_pred"],
-                    model_name=r["model"], class_names=class_names,
+                    model_name=r["model"], class_names=["real", "fake"],
                     save_as_prefix=f"cm_ood_{r['model'].split(' →')[0].lower().replace(' ', '_')}_"
                                    f"{r['model'].split('→')[-1].strip().lower().replace('.', '').replace(' ', '_')}",
                     title_suffix="cross-dataset",
@@ -436,7 +430,7 @@ def main() -> int:
         df_ood = pd.DataFrame(results_csv)
         save_table(df_ood, "17_cross_dataset_ood")
 
-        # Audit trail da salvaguarda de polaridade.
+        # Audit trail da salvaguarda de polaridade (Seção 4.7).
         save_polarity_audit_log(results_csv)
 
         # Delta IID vs OOD
@@ -460,16 +454,19 @@ def main() -> int:
         if delta_rows:
             save_table(pd.DataFrame(delta_rows).round(4), "17_cross_dataset_delta")
 
-        # Diagnóstico de erros (BERT FT em Fake.br)
-        texts_fbr = df_fbr["text"].astype(str).tolist()
+        # Diagnóstico de erros (BERT FT em Fake.br) — mesmo pré-processamento
+        # e mesma convenção de rótulos (0=real, 1=fake) da avaliação oficial.
+        from fakerecogna2.preprocessing.text_cleaning import preprocess_base
+        texts_fbr = df_fbr["text"].astype(str).apply(preprocess_base).tolist()
         probs_fbr = _predict_bert_ft(texts_fbr)
-        y_fbr = np.array([{"fake": 0, "real": 1}.get(str(l).lower(), -1) for l in df_fbr["label"]])
+        y_fbr = np.array([{"real": 0, "fake": 1}.get(str(l).lower(), -1) for l in df_fbr["label"]])
         mask = y_fbr >= 0
         error_diagnosis_cross_dataset(
             probs_fbr[mask], y_fbr[mask], model_name="BERTimbau FT (Fake.br)",
         )
 
         # 10b. Cross-dataset INVERSO: treina em Fake.br, avalia em FakeRecogna
+        # (Cap. 4.E - cross-dataset bidirecional)
         from fakerecogna2.evaluation import train_on_fakebr_eval_main
         train_on_fakebr_eval_main(
             df_fakebr=df_fbr,
@@ -520,6 +517,8 @@ def main() -> int:
         )
 
     # 12c. Analise de erros estratificada (fonte/categoria/ano/confianca)
+    # Cap. 5.9: 'distribuicao de erros por classe, fonte, ano, comprimento
+    # e confianca preditiva'.
     if "df_test_meta" in ctx.extras:
         _section("12c. Analise de erros por fonte/categoria/ano/confianca")
         from fakerecogna2.evaluation import error_distribution_full
@@ -558,7 +557,7 @@ def main() -> int:
             save_as_prefix="xai_err",
         )
 
-    # 13. Paraphrasing Equalizer
+    # 13. Paraphrasing Equalizer (Seção 21)
     if not skip_paraphr:
         _section("13. Paraphrasing Equalizer")
         from fakerecogna2.data.splits import make_random_splits
@@ -627,6 +626,7 @@ def main() -> int:
     })
 
     # 14b. Auditoria de parametros para todos os modelos disponiveis
+    # (Cap. 5.11 - auditar coluna de parametros na versao final)
     audit_models = {
         "CNN": ctx.models.get("CNN"),
         "LSTM": ctx.models.get("LSTM"),
@@ -634,7 +634,7 @@ def main() -> int:
         "Ens3 (CNN+LSTM+ConvLSTM)": list(ctx.models.values()),
         "BERTimbau FT": ctx.bert_clf,
     }
-    # Adiciona baselines treinados (sklearn), toma o objeto modelo da tupla
+    # Adiciona baselines treinados (sklearn) — toma o objeto modelo da tupla
     for name, _, _, mdl in trained_baselines:
         audit_models[name] = mdl
     audit_models = {k: v for k, v in audit_models.items() if v is not None}

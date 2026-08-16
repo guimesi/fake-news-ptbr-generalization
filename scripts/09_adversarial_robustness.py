@@ -1,18 +1,7 @@
-"""Etapa 9: robustez adversarial.
+"""Etapa 9 — Robustez adversarial (cells 69-71, Seção 19).
 
-Aplica quatro perturbações no test set (typos com mapa de teclado, deleção de
-palavras, troca de palavras adjacentes e back-translation PT para EN para PT via
-MarianMT) e mede a queda de F1 do Ens3 e do BERTimbau FT.
-
-Pré-requisitos: nenhum script anterior (treina internamente). A back-translation
-baixa os modelos MarianMT na primeira execução.
-
-Saídas (outputs/metrics/): 19_adversarial_robustness.csv
-
-Uso:
-    python scripts/09_adversarial_robustness.py
-    python scripts/09_adversarial_robustness.py --no-bt          # pula back-translation
-    python scripts/09_adversarial_robustness.py --n-sample 200   # amostra menor
+Aplica typos / deletion / swap / back-translation no test set e mede a queda
+de F1 dos modelos.
 """
 
 from __future__ import annotations
@@ -34,8 +23,7 @@ from _training import train_bert_classifier, train_deep_ensemble
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--no-bt", action="store_true", help="Pula back-translation (lento).")
-    p.add_argument("--n-sample", type=int, default=500,
-                   help="Tamanho da amostra do test set por perturbação (default 500).")
+    p.add_argument("--n-sample", type=int, default=500)
     args = p.parse_args()
 
     ctx = prepare_through_features()

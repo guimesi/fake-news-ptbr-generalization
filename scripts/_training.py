@@ -18,7 +18,7 @@ import torch
 from fakerecogna2 import ExperimentContext
 from fakerecogna2.config import SEEDS_MULTI
 from fakerecogna2.models import (
-    BERTClassifier,  # noqa: F401  (re-export pra conveniência)
+    BERTClassifier,  # noqa: F401  — re-export pra conveniência
     TextCNN,
     TextConvLSTM,
     TextLSTM,
@@ -50,7 +50,7 @@ def train_deep_ensemble(
     """
     if "loaders" not in ctx.extras:
         raise RuntimeError(
-            "ctx.extras['loaders'] vazio, rode `_pipeline.prepare_through_features` antes."
+            "ctx.extras['loaders'] vazio — rode `_pipeline.prepare_through_features` antes."
         )
     train_loader, val_loader, test_loader = ctx.extras["loaders"]
     embed_dim = ctx.extras.get("embed_dim", 768)
@@ -187,7 +187,7 @@ def train_bert_classifier(
     """
     if ctx.bert_model is None or ctx.tokenizer is None:
         raise RuntimeError(
-            "ctx.bert_model/tokenizer vazios, rode `_pipeline.prepare_through_features` antes."
+            "ctx.bert_model/tokenizer vazios — rode `_pipeline.prepare_through_features` antes."
         )
     num_classes = len(ctx.extras.get("class_names", ["fake", "real"]))
     seeds_list = seeds or [ctx.seed]
@@ -267,7 +267,7 @@ def make_predict_ens3(ctx: ExperimentContext, batch_size: int = 32):
     """
     if not all(k in ctx.models for k in ("CNN", "LSTM", "ConvLSTM")):
         raise RuntimeError(
-            "Modelos do ensemble não encontrados em ctx.models, "
+            "Modelos do ensemble não encontrados em ctx.models — "
             "rode `train_deep_ensemble(ctx)` antes."
         )
     if ctx.bert_model is None or ctx.tokenizer is None:
@@ -299,7 +299,7 @@ def make_predict_bert_ft(ctx: ExperimentContext, batch_size: int = 32):
     """Cria predict_fn *batched* do BERTimbau fine-tuned."""
     if ctx.bert_clf is None or ctx.tokenizer is None:
         raise RuntimeError(
-            "ctx.bert_clf/tokenizer vazios, rode `train_bert_classifier(ctx)` antes."
+            "ctx.bert_clf/tokenizer vazios — rode `train_bert_classifier(ctx)` antes."
         )
 
     def predict_bert_ft(texts) -> np.ndarray:

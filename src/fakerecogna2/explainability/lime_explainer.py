@@ -1,4 +1,4 @@
-"""LIME para acertos e erros."""
+"""LIME para acertos e erros (Seção 15.1, cell 50)."""
 
 from __future__ import annotations
 
@@ -59,7 +59,8 @@ def select_lime_targets_4cells(
 ) -> list[tuple[int, str]]:
     """Seleciona exemplos das 4 celulas da matriz de confusao binaria.
 
-    Amplia a analise XAI para TP/TN/FP/FN.
+    Atende a declaracao da Secao 5.10 do Cap. 5: ampliar XAI para
+    TP/TN/FP/FN.
 
     Args:
         positive_class_idx: por convencao 0 = fake (classe positiva).
@@ -195,7 +196,7 @@ def run_lime_explanations(
         ax.set_xlabel("Contribuição")
         ax.axvline(0, color="k", lw=0.5)
         ax.set_title(
-            f"LIME: {tag} (idx={idx}, true={class_names[int(y_test[idx])]}, "
+            f"LIME — {tag} (idx={idx}, true={class_names[int(y_test[idx])]}, "
             f"pred={class_names[int(predictions[idx])]})"
         )
         ax.grid(axis="x", alpha=0.3)

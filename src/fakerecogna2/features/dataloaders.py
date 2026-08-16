@@ -1,4 +1,4 @@
-"""DataLoaders PyTorch a partir dos embeddings."""
+"""DataLoaders PyTorch a partir dos embeddings (Seção 7.3, cell 27)."""
 
 from __future__ import annotations
 

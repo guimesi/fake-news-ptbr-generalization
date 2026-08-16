@@ -1,6 +1,7 @@
-"""Orquestrador dos experimentos adversariais.
+"""Orquestrador dos experimentos adversariais (Seção 19.3, cell 71).
 
-Em vez de assumir `predict_ens3` / `predict_bert_ft` como globais, recebe um dict `models` mapeando nome → função `(list[str]) -> np.ndarray`
+Em vez de assumir `predict_ens3` / `predict_bert_ft` como globais (como o
+notebook), recebe um dict `models` mapeando nome → função `(list[str]) -> np.ndarray`
 de probabilidades. Isso desacopla este módulo dos detalhes de models/.
 """
 

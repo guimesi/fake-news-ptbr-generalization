@@ -1,16 +1,14 @@
-# Visão Geral do Experimento: FakeRecogna 2.0
+# Visão Geral do Experimento — FakeRecogna 2.0
 
-Este documento é documentação técnica auxiliar: resume, em alto nível, o que
-cada bloco do experimento faz e onde ele vive no projeto. Em caso de
-divergência, prevalecem o README e o texto da qualificação de mestrado.
+Este documento resume, em alto nível, o que cada bloco do experimento faz e
+onde ele vive no projeto.
 
 ## Pergunta de pesquisa
 
 Avaliar, de maneira rigorosa e reprodutível, a viabilidade da detecção
 automática de **fake news em português brasileiro** sobre o corpus
-**FakeRecogna 2.0**, considerando: viés do dataset, robustez fora-da-distribuição, robustez a
-perturbações, interpretabilidade e, como eixo auxiliar, custo computacional
-(latência e memória).
+**FakeRecogna 2.0**, considerando: viés do dataset, robustez fora-da-distribuição,
+robustez adversarial, interpretabilidade e prontidão para deployment.
 
 ## Pipeline experimental (em ordem)
 
@@ -43,16 +41,14 @@ perturbações, interpretabilidade e, como eixo auxiliar, custo computacional
 
 ## Métricas usadas
 
-- **Classificação**: accuracy, precision/recall/F1 macro (F1-macro é a
-  métrica principal; ROC-AUC é apenas auxiliar e não integra o protocolo
-  central da qualificação)
+- **Classificação**: accuracy, precision/recall/F1 macro, ROC-AUC
 - **Calibração**: ECE, Brier score, reliability diagram
 - **Significância**: McNemar pairwise + correção Holm
-- **Robustez**: bootstrap CI (10.000 reamostragens), 5-fold CV sem leakage
+- **Robustez**: bootstrap CI (1000+ iterações), 5-fold CV sem leakage
 - **XAI**: top-k LIME, Integrated Gradients, Attention Rollout, Jaccard de
   estabilidade
-- **Custo computacional (auxiliar)**: latência média/p95 com warmup, tamanho
-  em disco, fronteira de Pareto F1 × latência
+- **Deployment**: latência média/p95 com warmup, tamanho em disco, fronteira
+  de Pareto F1 × latência
 
 ## Reprodutibilidade
 
@@ -65,9 +61,8 @@ perturbações, interpretabilidade e, como eixo auxiliar, custo computacional
 
 ## Datasets
 
-- **FakeRecogna 2.0**: carregado do Hugging Face Hub
-  (`recogna-nlp/fakerecogna2-{variant}`, variantes `abstrativa` e `extrativa`).
-- **Fake.br-Corpus**: usado em cross-dataset; espera-se cópia local em
+- **FakeRecogna 2.0** — carregado do Hugging Face Hub (`FakeRecogna/FakeRecogna2`).
+- **Fake.br-Corpus** — usado em cross-dataset; espera-se cópia local em
   `data/external/Fake.br-Corpus-master` (configurável em
   `configs/config.yaml`). Download:
   https://github.com/roneysco/Fake.br-Corpus
@@ -82,3 +77,28 @@ perturbações, interpretabilidade e, como eixo auxiliar, custo computacional
 | BERTimbau FT     | `neuralmind/bert-base-portuguese-cased` fine-tuned                       |
 | PLMs maiores     | BERTimbau-large, XLM-RoBERTa-base, mDeBERTa-v3-base                      |
 | Back-translation | Helsinki-NLP/opus-mt (PT↔EN)                                             |
+
+## Atualizações de agosto/2026 (pós-revisão ENIAC 2026)
+
+Motivadas pela revisão do artigo aceito no ENIAC 2026:
+
+- **Alinhamento de rótulos cross-dataset fixado ex-ante** (convenção canônica
+  0=real, 1=fake em todo o caminho OOD); o auto-flip de polaridade foi
+  removido — a verificação de polaridade agora apenas alerta erro de setup,
+  sem alterar predições (`evaluation/cross_dataset.py`).
+- **Isolamento do backbone**: `train_bertimbau_finetune` deepcopia o BERTimbau
+  antes do fine-tuning, evitando que avaliações posteriores reutilizem um
+  encoder mutado.
+- **Sondas de atalho** (`scripts/16_shortcut_probes.py`): Regressões
+  Logísticas usando apenas nº de tokens, apenas top-K termos (log-odds do
+  treino) ou apenas metadados (categoria+ano). Destaque: metadados sozinhos
+  atingem F1-macro 0,9611, empatando com o ensemble neural (0,9612).
+- **Reexecução limpa da avaliação cross-dataset nas duas direções**
+  (`scripts/17_cross_dataset_inverse.py` e
+  `scripts/18_cross_dataset_direct_clean.py`). Números oficiais (F1-macro):
+  FakeRecogna→Fake.br 0,6959 (Ens3) / 0,6833 (BERTimbau FT);
+  Fake.br→FakeRecogna 0,6883 (Ens2) / 0,6772 (BERTimbau FT) — queda de
+  27–28 pontos frente ao IID, simétrica nas duas direções.
+- CSVs novos em `outputs/metrics/`: `23_shortcut_probes.csv`,
+  `23_test_support_by_year.csv`; artefatos cross-dataset regravados sob o
+  alinhamento canônico.

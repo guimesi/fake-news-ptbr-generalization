@@ -1,4 +1,4 @@
-"""Integrated Gradients via Captum."""
+"""Integrated Gradients via Captum (Seção 18.1, cell 65)."""
 
 from __future__ import annotations
 
@@ -38,7 +38,7 @@ def compute_integrated_gradients(
     try:
         from captum.attr import LayerIntegratedGradients
     except ImportError:
-        log.warning("captum não instalado, pulando Integrated Gradients.")
+        log.warning("captum não instalado — pulando Integrated Gradients.")
         return [], np.array([])
 
     import torch

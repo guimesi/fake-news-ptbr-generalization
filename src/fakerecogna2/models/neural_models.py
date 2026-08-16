@@ -1,4 +1,4 @@
-"""Arquiteturas neurais sobre embeddings BERT: TextCNN, TextLSTM, TextConvLSTM."""
+"""Arquiteturas neurais sobre embeddings BERT: TextCNN, TextLSTM, TextConvLSTM (cell 31)."""
 
 from __future__ import annotations
 

@@ -3,6 +3,9 @@
 Gera para cada modelo:
   - cm_<save_as>.csv: tabela 2x2 + linha de totais + metricas por classe
   - cm_<save_as>.png: heatmap da matriz de confusao
+
+Atende as declaracoes da Secao 5.3 e 5.6 do Cap. 5 da dissertacao, que
+prometem incluir matrizes de confusao e metricas por classe na versao final.
 """
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-"""Extração de embeddings sob demanda (streaming): memória constante.
+"""Extração de embeddings sob demanda (streaming) — memória constante.
 
 Usado em ablações e cross-dataset onde manter todos os embeddings em RAM
 ao mesmo tempo estouraria ~20 GB. Custo: ~10-15% mais lento por época vs
@@ -21,7 +21,7 @@ log = get_logger()
 
 
 class StreamingEmbDataset(Dataset):
-    """Dataset que devolve (texto, label), embedding é extraído no collate.
+    """Dataset que devolve (texto, label) — embedding é extraído no collate.
 
     Memória: O(batch × max_len × hidden_size), constante. Velocidade:
     ~15% mais lento por época que pré-computar em RAM.
@@ -99,7 +99,7 @@ def free_embeddings(*tensor_names: str, namespace: dict | None = None) -> None:
 
     Em uso simples (com `ExperimentContext`), prefira fazer
     ``ctx.token_train = None`` diretamente. Esta função é pra namespace
-    global (passe o `globals()` do caller via `namespace`).
+    estilo notebook (passe o `globals()` do caller via `namespace`).
     """
     if namespace is not None:
         for name in tensor_names:

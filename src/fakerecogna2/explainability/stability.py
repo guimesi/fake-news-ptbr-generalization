@@ -1,4 +1,4 @@
-"""Estabilidade LIME: K execuções + Jaccard sobre top-N tokens."""
+"""Estabilidade LIME: K execuções + Jaccard sobre top-N tokens (Seção I, cell 112)."""
 
 from __future__ import annotations
 
@@ -108,11 +108,11 @@ def lime_stability(
     print(tabulate(df, headers="keys", tablefmt="github", showindex=False))
 
     if mean_stability >= 0.7:
-        msg = "🟢 LIME ESTÁVEL: reportar com confiança."
+        msg = "🟢 LIME ESTÁVEL — reportar com confiança."
     elif mean_stability >= 0.4:
-        msg = "🟡 LIME PARCIALMENTE ESTÁVEL: reportar com cautela."
+        msg = "🟡 LIME PARCIALMENTE ESTÁVEL — reportar com cautela."
     else:
-        msg = "🔴 LIME INSTÁVEL: triangular com IG/Rollout."
+        msg = "🔴 LIME INSTÁVEL — triangular com IG/Rollout."
     log.info(f"Jaccard médio: {mean_stability:.3f}  {msg}")
 
     if save_as is not None:

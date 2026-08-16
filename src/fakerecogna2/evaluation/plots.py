@@ -1,4 +1,4 @@
-"""Gráfico comparativo final de modelos."""
+"""Gráfico comparativo final de modelos (cell 54)."""
 
 from __future__ import annotations
 

@@ -1,11 +1,11 @@
 """Utilitários de memória para extração de embeddings em streaming.
 
-Expõe os helpers `free_principal_embs`,
+Replica os helpers da célula 091 do notebook (`free_principal_embs`,
 `StreamingEmbDataset`, `streaming_collate`, `make_streaming_loaders`,
 `extract_token_embs_chunked`).
 
-O código original assumia que `tokenizer`, `bert_model`, `DEVICE`,
-`MAX_SEQ_LEN`, `BATCH_SIZE` e `logger` existiam como globais. Aqui esses valores
+A célula original assume que `tokenizer`, `bert_model`, `DEVICE`,
+`MAX_SEQ_LEN`, `BATCH_SIZE` e `logger` existem como globais. Aqui esses valores
 são passados como argumentos explícitos.
 """
 
@@ -33,7 +33,7 @@ def free_globals(*names: str) -> None:
 
 class StreamingEmbDataset(Dataset):
     """Dataset que devolve (texto, label). A extração de embedding acontece no
-    collate_fn, assim o pico de memória é O(batch × max_len × 768).
+    collate_fn — assim o pico de memória é O(batch × max_len × 768).
     """
 
     def __init__(self, texts: Iterable[str], labels: Iterable[int]):
@@ -48,7 +48,7 @@ class StreamingEmbDataset(Dataset):
 
 
 def make_streaming_collate(tokenizer, bert_model, device, max_len: int = _DEFAULT_MAXLEN):
-    """Fábrica para o `streaming_collate`."""
+    """Fábrica para o `streaming_collate` da célula 091."""
 
     def _collate(batch):
         texts, labels = zip(*batch)
@@ -71,7 +71,7 @@ def make_streaming_loaders(
     tokenizer, bert_model, device,
     batch_size: int = _DEFAULT_BS, max_len: int = _DEFAULT_MAXLEN,
 ):
-    """Cria três DataLoaders com extração on-the-fly."""
+    """Cria três DataLoaders com extração on-the-fly. Mantém a semântica da célula 091."""
     collate = make_streaming_collate(tokenizer, bert_model, device, max_len=max_len)
     return (
         DataLoader(StreamingEmbDataset(X_tr, y_tr), batch_size=batch_size, shuffle=True,
@@ -87,7 +87,7 @@ def extract_token_embs_chunked(
     texts, tokenizer, bert_model, device,
     max_len: int = _DEFAULT_MAXLEN, batch_size: int = 32, chunk_size: int = 2000,
 ):
-    """Extrai token-level embeddings em chunks."""
+    """Extrai token-level embeddings em chunks. Equivalente à célula 091."""
     all_embs = []
     bert_model.eval()
     total = len(texts)

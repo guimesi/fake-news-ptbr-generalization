@@ -1,26 +1,11 @@
-"""Etapa 13: ablações finais.
+"""Etapa 13 — Ablações finais (A: preprocessing, B: max_len, D: learning curve,
+E: performance por faixa, Q: quartil curto).
 
-Roda um subconjunto configurável de ablações:
-    A = efeito do preprocessing (base vs stem vs lemma)
-    B = efeito do comprimento máximo de sequência (max_len)
-    D = learning curve (desempenho vs tamanho do treino)
-    E = desempenho por faixa de comprimento do texto
-    Q = distribuição de classes no quartil mais curto
+Ablações C (extrativa) e F (equalizador linguístico) ficam nos scripts 04 e
+11 respectivamente — usam treino de ensemble em variantes do dataset.
 
-As ablações C (variante extrativa) e F (equalizador linguístico) ficam nos
-scripts 04/run_all e 11 respectivamente, pois usam treino de ensemble em
-variantes do dataset.
+Uso::
 
-Pré-requisitos: nenhum script anterior. O setup é condicional ao que será
-rodado (features para B/D/E, preprocessing para A, dados para Q). GPU
-recomendada para B/D/E (treinam ensembles).
-
-Saídas (outputs/metrics/ e outputs/figures/):
-    preprocessing_ablation.csv (A), seqlen_ablation.csv (B),
-    learning_curve.csv + D_learning_curve.png (D),
-    performance_by_length.csv + E_performance_by_length.png (E)
-
-Uso:
     python scripts/13_ablations.py                   # tudo
     python scripts/13_ablations.py --only A          # só A
     python scripts/13_ablations.py --skip B,D        # pula B e D
@@ -54,8 +39,7 @@ def main() -> int:
                    help=f"Roda só ablações listadas. Opções: {','.join(ABLATIONS)}")
     p.add_argument("--skip", type=str, default="",
                    help="Pula ablações listadas (separadas por vírgula).")
-    p.add_argument("--epochs", type=int, default=15,
-                   help="Épocas dos treinos das ablações B/D/E (default 15).")
+    p.add_argument("--epochs", type=int, default=15)
     p.add_argument("--seqlen", type=int, default=300, help="max_seq_len da ablação B.")
     args = p.parse_args()
 

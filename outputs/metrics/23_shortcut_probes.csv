@@ -1,0 +1,6 @@
+probe,n_features,Accuracy,F1
+Nº de tokens (1 feature),1,0.7128,0.7128
+"Top-6 termos por classe (log-odds, 12 features)",12,0.7836,0.7816
+"Top-20 termos por classe (log-odds, 40 features)",40,0.8445,0.8445
+"Top-50 termos por classe (log-odds, 100 features)",100,0.8688,0.8687
+"Metadados apenas (categoria+ano, 12 features)",12,0.9611,0.9611

@@ -1,4 +1,4 @@
-"""McNemar pairwise com correção Holm."""
+"""McNemar pairwise com correção Holm (Seção 13.2 do notebook, célula 42)."""
 
 from __future__ import annotations
 

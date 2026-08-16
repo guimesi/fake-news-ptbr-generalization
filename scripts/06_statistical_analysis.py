@@ -1,22 +1,7 @@
-"""Etapa 6: análise estatística (log-odds de Dirichlet, Chi quadrado e McNemar).
+"""Etapa 6 — Análise estatística: log-odds (Seção 4) + McNemar (Seção 13.2).
 
-Com `--logodds-only`, roda apenas a análise lexical (log-odds com prior de
-Dirichlet, Monroe et al. 2008, e Chi quadrado sobre TF-IDF), sem treinar
-modelos. Sem essa flag, treina os modelos neurais (e o BERTimbau FT, salvo
-`--no-bert`) e aplica o teste de McNemar pareado com correção de Holm sobre as
-predições.
-
-Pré-requisitos: nenhum script anterior (refaz o setup; no caminho completo
-retreina os modelos na própria sessão).
-
-Saídas (outputs/metrics/):
-    04_logodds_abstrativa_n<n>_top_<classe>.csv, 04_chi2_top_abstrativa.csv,
-    13_mcnemar_pairwise_holm.csv (apenas no caminho completo)
-
-Uso:
-    python scripts/06_statistical_analysis.py --logodds-only  # só análise lexical
-    python scripts/06_statistical_analysis.py                 # lexical + McNemar
-    python scripts/06_statistical_analysis.py --no-bert       # sem o BERTimbau FT
+Se chamado isoladamente, retreina os modelos para gerar predições. Use
+`--from-04` se já rodou `04_train_deep_models.py` na mesma sessão Python.
 """
 
 from __future__ import annotations

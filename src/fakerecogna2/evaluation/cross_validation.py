@@ -1,4 +1,4 @@
-"""5-fold CV com split interno de validação, sem leakage."""
+"""5-fold CV com split interno de validação, sem leakage (cell 44)."""
 
 from __future__ import annotations
 

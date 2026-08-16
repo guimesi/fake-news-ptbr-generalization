@@ -1,7 +1,7 @@
 """IO de artefatos (tabelas, plots) e estruturas globais de resultados.
 
-Expõe `save_table`, `save_plot`, `cleanup`, `RESULTS` e `RESULTS_MULTISEED`
-redirecionando para `outputs/`.
+Replica `save_table`, `save_plot`, `cleanup`, `RESULTS` e `RESULTS_MULTISEED`
+definidos na célula 1.3 do notebook, redirecionando para `outputs/`.
 
 `RESULTS` e `RESULTS_MULTISEED` são *dicts auto-persistentes*: cada escrita
 grava em `outputs/.cache/results*.json`, e na próxima importação o conteúdo
@@ -164,7 +164,7 @@ def clear_results(also_multiseed: bool = True) -> None:
 
 
 def cleanup() -> None:
-    """Libera memória CPU/GPU."""
+    """Libera memória CPU/GPU. Cópia da célula 1.3."""
     gc.collect()
     if _HAS_TORCH and torch.cuda.is_available():
         torch.cuda.empty_cache()

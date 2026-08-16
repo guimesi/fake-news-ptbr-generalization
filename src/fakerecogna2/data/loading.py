@@ -89,10 +89,7 @@ def normalize_schema(df: pd.DataFrame) -> pd.DataFrame:
 def encode_labels(
     df: pd.DataFrame, encoder: LabelEncoder | None = None
 ) -> tuple[pd.DataFrame, LabelEncoder, list[str]]:
-    """Codifica a coluna `label` em inteiros via LabelEncoder (real=0, fake=1).
-
-    O FakeRecogna 2.0 usa rótulos nativos 0/1 (0 = real, 1 = fake) e o
-    LabelEncoder preserva essa ordem, então `label_enc` fica real=0, fake=1.
+    """Encoda label fake/real → 0/1.
 
     Args:
         df: DataFrame com coluna `label`.
@@ -120,7 +117,7 @@ def parse_dates(df: pd.DataFrame) -> pd.DataFrame:
         log.info(f"Datas parseadas: {v}/{len(df)} ({100 * v / len(df):.1f}%)")
     else:
         df["date_parsed"] = pd.NaT
-        log.warning("Coluna 'date' ausente, split temporal será desabilitado.")
+        log.warning("Coluna 'date' ausente — split temporal será desabilitado.")
     return df
 
 

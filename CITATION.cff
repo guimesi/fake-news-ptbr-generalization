@@ -1,10 +1,21 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite it as below and contact the author for the updated academic paper citation."
+message: "If you use this software, please cite both the repository (below) and the associated paper accepted at ENIAC 2026 (see preferred-citation)."
 title: "Detecção de fake news em português brasileiro: generalização, atalhos e robustez"
 authors:
   - family-names: "Silva"
     given-names: "Guilherme de Oliveira"
-version: "0.9.0"
-date-released: "2026-08-01"
+version: "1.0.0"
+date-released: "2026-08-16"
 url: "https://github.com/guimesi/fake-news-ptbr-generalization"
 license: MIT
+preferred-citation:
+  type: conference-paper
+  title: "Desempenho alto, generalização frágil: lacunas de generalização e aprendizado por atalho em detecção de fake news em português brasileiro"
+  authors:
+    - family-names: "Silva"
+      given-names: "Guilherme de Oliveira"
+    - family-names: "Bianchi"
+      given-names: "Reinaldo Augusto da Costa"
+  collection-title: "Anais do Encontro Nacional de Inteligência Artificial e Computacional (ENIAC 2026)"
+  year: 2026
+  notes: "Aceito para publicação; a referência definitiva (páginas/DOI) será atualizada após a publicação dos anais."

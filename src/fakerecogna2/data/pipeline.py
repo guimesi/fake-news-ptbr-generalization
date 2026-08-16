@@ -31,7 +31,7 @@ def run(
 
     Args:
         ctx: contexto a ser populado.
-        do_integrity_checks: roda análises de fonte/comprimento/temporal.
+        do_integrity_checks: roda análises de fonte/comprimento/temporal (Seção 3).
         do_ner: roda NER (lento, ~2 min). Requer spaCy `pt_core_news_sm`.
         do_extrativa: também carrega a variante extrativa.
         do_fakebr: também carrega o Fake.br-Corpus (cross-dataset).

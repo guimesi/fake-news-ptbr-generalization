@@ -1,20 +1,10 @@
-"""Etapa 1: carregamento, integridade, preprocessing e splits.
+"""Etapa 1 — Carregamento + integridade + preprocessing + splits.
 
-Baixa o FakeRecogna 2.0 (variante abstrativa) do Hugging Face na primeira
-execução, normaliza o schema, deduplica (exata + near-duplicate por MinHashLSH),
-roda as checagens de integridade do corpus, aplica o preprocessing base e gera
-os splits estratificados 70/10/20 sobre a coluna `text_proc`. Não treina
-modelos.
+Carrega FakeRecogna 2.0, faz checagens de integridade do corpus, aplica
+preprocessing base e gera splits estratificados sobre `text_proc`.
 
-Pré-requisitos: nenhum script anterior (refaz o setup do zero). A flag
-`--fakebr` exige o Fake.br-Corpus local (ver `data.fakebr_local_path` em
-configs/config.yaml).
+Uso::
 
-Saídas (em outputs/figures/, quando a integridade roda):
-    03_length_per_class_*.png, 03_length_per_class_combined.png,
-    03_temporal_per_class.png
-
-Uso:
     python scripts/01_prepare_data.py                     # padrão
     python scripts/01_prepare_data.py --ner               # também roda NER (lento)
     python scripts/01_prepare_data.py --fakebr            # também carrega Fake.br
@@ -48,7 +38,7 @@ def main() -> int:
     )
     parser.add_argument(
         "--skip-integrity", action="store_true",
-        help="Pula análises de integridade (fonte/comprimento/temporal).",
+        help="Pula análises da Seção 3 (fonte/comprimento/temporal).",
     )
     args = parser.parse_args()
 

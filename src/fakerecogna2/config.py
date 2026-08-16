@@ -1,13 +1,8 @@
 """Configuração centralizada do projeto FakeRecogna 2.0.
 
-Fonte de verdade dos parâmetros: o arquivo `configs/config.yaml`, carregado no
-import. As constantes abaixo (SEED, MAX_LEN, BATCH_SIZE, paths, lista de PLMs,
-etc.) são lidas do YAML; o valor `default=` em cada `_g(...)` é apenas um
-fallback usado se o YAML estiver ausente ou se a chave não existir. Os fallbacks
-são mantidos idênticos aos valores do YAML para que o protocolo experimental se
-preserve mesmo sem o arquivo.
-
-Edite o YAML, não este arquivo, para mudar o protocolo experimental.
+Carrega `configs/config.yaml` (se disponível) e expõe constantes derivadas que
+substituem valores hardcoded do notebook. Mantém compatibilidade com a célula
+1.2 do notebook (imports + setup determinístico).
 """
 
 from __future__ import annotations
@@ -47,7 +42,7 @@ def _g(*keys: str, default=None):
 
 # --- Determinismo ------------------------------------------------------------
 SEED: int = int(_g("experiment", "seed", default=42))
-SEEDS_MULTI: list[int] = list(_g("experiment", "seeds_multi", default=[42, 7, 2024]))
+SEEDS_MULTI: list[int] = list(_g("experiment", "seeds_multi", default=[42, 123, 2024]))
 
 # --- Dataset -----------------------------------------------------------------
 DATASET_HF_ID_TEMPLATE: str = _g(
@@ -67,13 +62,13 @@ VAL_SIZE: float = float(_g("splits", "val_size", default=0.10))
 
 # --- Modelos / BERTimbau -----------------------------------------------------
 BERTIMBAU_MODEL: str = _g("models", "bertimbau", default="neuralmind/bert-base-portuguese-cased")
-MAX_LEN: int = int(_g("models", "max_len", default=200))
-BATCH_SIZE: int = int(_g("models", "batch_size", default=32))
+MAX_LEN: int = int(_g("models", "max_len", default=256))
+BATCH_SIZE: int = int(_g("models", "batch_size", default=16))
 NUM_EPOCHS: int = int(_g("models", "num_epochs", default=10))
 LEARNING_RATE: float = float(_g("models", "learning_rate", default=2e-5))
 PATIENCE: int = int(_g("models", "patience", default=3))
 
-# --- PLMs adicionais ---------------------------------------------
+# --- PLMs adicionais (Seção 20) ---------------------------------------------
 PLM_CANDIDATES: list[str] = list(
     _g(
         "models",
@@ -103,7 +98,7 @@ ADV_TYPO_RATE: float = float(_g("adversarial", "typo_rate", default=0.05))
 ADV_DELETION_RATE: float = float(_g("adversarial", "deletion_rate", default=0.10))
 ADV_SWAP_RATE: float = float(_g("adversarial", "swap_rate", default=0.05))
 ADV_PERTURB_SAMPLE_SIZE: int = int(_g("adversarial", "perturb_sample_size", default=500))
-ADV_BT_SAMPLE_SIZE: int = int(_g("adversarial", "bt_sample_size", default=300))
+ADV_BT_SAMPLE_SIZE: int = int(_g("adversarial", "bt_sample_size", default=100))
 
 # --- Diretórios de artefatos ------------------------------------------------
 ARTIFACTS_DIR: Path = Path(_g("paths", "artifacts_dir", default=str(PROJECT_ROOT / "outputs")))

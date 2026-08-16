@@ -1,4 +1,7 @@
-"""Métricas de deployment: latência (P50/P95/P99), VRAM, tamanho em disco, Pareto."""
+"""Métricas de deployment: latência (P50/P95/P99), VRAM, tamanho em disco, Pareto.
+
+Cobre as células 80, 81, 82, 83 (Seção 22) e 114 (Seção J).
+"""
 
 from __future__ import annotations
 
@@ -196,10 +199,10 @@ def plot_pareto_f1_latency(
             fontsize=9,
         )
     ax.set_xscale("log")
-    ax.set_xlabel("Latência P50 (ms/amostra), escala log")
+    ax.set_xlabel("Latência P50 (ms/amostra) — escala log")
     ax.set_ylabel("F1 macro (%)")
     ax.set_title(
-        "Trade-off F1 × Latência: escolha do modelo em produção", fontweight="bold"
+        "Trade-off F1 × Latência — escolha do modelo em produção", fontweight="bold"
     )
     ax.grid(alpha=0.3)
     plt.tight_layout()
@@ -242,6 +245,9 @@ def audit_model_parameters(
     save_as: str | None = "J_parameters_audit",
 ) -> pd.DataFrame:
     """Conta parametros (totais + treinaveis) por modelo.
+
+    Cobre Secao 5.11 do Cap. 5: 'a coluna de parametros... deve ser
+    auditada na versao final'.
 
     Args:
         models: dict nome -> objeto. Aceita listas/tuples (soma os subitens).

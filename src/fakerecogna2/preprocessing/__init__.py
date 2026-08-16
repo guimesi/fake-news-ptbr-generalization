@@ -1,10 +1,10 @@
 """Limpeza de texto, sumarização extrativa (TextRank) e equalizador linguístico.
 
 Submódulos:
-- `text_cleaning`: preprocess_base / _stem / _lemma + recursos NLP lazy.
-- `paraphrasing`: TextRank + build_equalized_dataset.
-- `equalizer`: METATEXT_FAKECHECK + strip_metatext + build_nometatext_dataset.
-- `pipeline`: orquestrador `run(ctx)`.
+- `text_cleaning` — preprocess_base / _stem / _lemma + recursos NLP lazy.
+- `paraphrasing` — TextRank + build_equalized_dataset.
+- `equalizer` — METATEXT_FAKECHECK + strip_metatext + build_nometatext_dataset.
+- `pipeline` — orquestrador `run(ctx)`.
 """
 
 from . import equalizer, paraphrasing, pipeline, text_cleaning

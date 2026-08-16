@@ -1,5 +1,8 @@
 """Split anti-vies: estratifica por (categoria, periodo, classe).
 
+Atende Cap. 6 secao 7.4: 'particionamento que reduza diferencas
+sistematicas entre classes' por topico (categoria) e per?odo temporal.
+
 A ideia e que cada split (train/val/test) tenha proporcao similar de cada
 combinacao (categoria_top, ano_bucket, label). Isso reduz a chance de
 shortcuts onde uma categoria/ano correlaciona quase perfeitamente com a

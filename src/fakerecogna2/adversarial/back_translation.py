@@ -1,4 +1,4 @@
-"""Back-translation PT→EN→PT via MarianMT.
+"""Back-translation PT→EN→PT via MarianMT (Seção 19.2, cell 70).
 
 Uso típico::
 

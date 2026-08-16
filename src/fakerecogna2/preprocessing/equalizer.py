@@ -1,6 +1,6 @@
-"""Equalizador linguístico: remoção de metatexto fact-check.
+"""Equalizador linguístico — remoção de metatexto fact-check (Seção F).
 
-O ensemble + comparativo virou
+Cobre as células 104 e 105. A célula 105 (ensemble + comparativo) virou
 parte do orquestrador `scripts/11_paraphrasing_equalizer.py`.
 """
 

@@ -1,8 +1,8 @@
 # =============================================================================
-# FakeRecogna 2.0: Configuração centralizada do experimento
+# FakeRecogna 2.0 — Configuração centralizada do experimento
 #
 # Mude valores aqui em vez de em código. Hiperparâmetros marcados como
-# CRÍTICOS definem o protocolo experimental, não altere a menos que esteja
+# CRÍTICOS definem o protocolo experimental — não altere a menos que esteja
 # conduzindo um experimento novo.
 # =============================================================================
 
@@ -20,7 +20,7 @@ data:
   text_columns_abstrativa: ["news_text_full", "text", "noticia"]
   text_columns_extrativa: ["news_text_short", "summary", "resumo"]
   label_column: "label"
-  # Fake.br-Corpus local: usado nos experimentos cross-dataset.
+  # Fake.br-Corpus local — usado nos experimentos cross-dataset.
   # Baixe de https://github.com/roneysco/Fake.br-Corpus e extraia neste path.
   fakebr_local_path: "data/external/Fake.br-Corpus-master"
 
@@ -29,12 +29,9 @@ splits:
   val_size: 0.10
 
 models:
-  # CRÍTICO: backbone BERTimbau e hparams compartilhados. Não alterar.
+  # CRÍTICO: backbone BERTimbau e hparams do fine-tuning. Não alterar.
   bertimbau: "neuralmind/bert-base-portuguese-cased"
   max_len: 200
-  # batch_size das redes neurais profundas (CNN/LSTM/ConvLSTM). O fine-tuning do
-  # BERTimbau e dos PLMs maiores usa batch 16 internamente (default de
-  # train_bert_classifier / train_bertimbau_finetune / plm_finetune).
   batch_size: 32
   num_epochs: 10
   learning_rate: 2.0e-5
@@ -66,7 +63,7 @@ adversarial:
   swap_rate: 0.05
   # Tamanhos de amostra para os experimentos adversariais.
   perturb_sample_size: 500     # típos, deleção e swap
-  bt_sample_size: 300          # retrotradução
+  bt_sample_size: 300          # retrotradução (Cap. 5.8: ampliada de 100 -> 300 para defesa)
 
 paths:
   artifacts_dir: "outputs"

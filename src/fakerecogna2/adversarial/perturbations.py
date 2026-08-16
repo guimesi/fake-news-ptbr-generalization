@@ -1,4 +1,4 @@
-"""Perturbações de texto: typos, deletion, swap."""
+"""Perturbações de texto (Seção 19.1, cell 69): typos, deletion, swap."""
 
 from __future__ import annotations
 

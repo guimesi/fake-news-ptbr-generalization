@@ -1,4 +1,4 @@
-"""Baselines clássicos: LogReg / LinearSVC / MLP, em TF-IDF e [CLS]."""
+"""Baselines clássicos: LogReg / LinearSVC / MLP, em TF-IDF e [CLS] (cell 29)."""
 
 from __future__ import annotations
 

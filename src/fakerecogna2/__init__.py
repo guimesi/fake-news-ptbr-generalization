@@ -1,4 +1,4 @@
-"""FakeRecogna 2.0: Detecção de Fake News em Português Brasileiro.
+"""FakeRecogna 2.0 — Detecção de Fake News em Português Brasileiro.
 
 Pipeline modular pra reproduzir o experimento de detecção de fake news em
 PT-BR usando o dataset FakeRecogna 2.0. Cada subpacote corresponde a uma

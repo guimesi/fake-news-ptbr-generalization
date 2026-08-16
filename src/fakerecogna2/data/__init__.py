@@ -1,11 +1,11 @@
 """Carregamento do FakeRecogna 2.0, integridade, splits e Fake.br-Corpus.
 
 Submódulos:
-- `loading`: Carregamento HF + normalização de schema + dedupe.
-- `integrity_checks`: Fonte/comprimento/temporal/NER por classe.
-- `splits`: Splits random/temporal/source.
-- `fakebr_loader`: Loader local do Fake.br-Corpus.
-- `pipeline`: Orquestrador `run(ctx)` que executa o subpacote inteiro.
+- `loading` — Carregamento HF + normalização de schema + dedupe.
+- `integrity_checks` — Fonte/comprimento/temporal/NER por classe.
+- `splits` — Splits random/temporal/source.
+- `fakebr_loader` — Loader local do Fake.br-Corpus.
+- `pipeline` — Orquestrador `run(ctx)` que executa o subpacote inteiro.
 """
 
 from . import anti_bias_splits, fakebr_loader, integrity_checks, loading, pipeline, splits

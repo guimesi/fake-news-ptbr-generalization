@@ -1,4 +1,4 @@
-"""Extração de embeddings BERTimbau.
+"""Extração de embeddings BERTimbau (Seção 7, cells 25 e 26).
 
 Encapsula o backbone (tokenizer + AutoModel) num `EmbeddingExtractor` que
 expõe `extract_token_embs` e `extract_cls_embs`. Lazy import de torch/transformers.
@@ -94,7 +94,7 @@ def extract_all_embeddings(
     cls_train = extractor.extract_cls_embs(X_train)
     cls_val = extractor.extract_cls_embs(X_val)
     cls_test = extractor.extract_cls_embs(X_test)
-    log.info(f"Shapes: tok: {emb_train.shape}  cls: {cls_train.shape}")
+    log.info(f"Shapes — tok: {emb_train.shape}  cls: {cls_train.shape}")
     return {
         "token_train": emb_train,
         "token_val": emb_val,

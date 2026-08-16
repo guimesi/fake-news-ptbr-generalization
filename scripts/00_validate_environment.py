@@ -1,14 +1,6 @@
-"""Etapa 0: valida o ambiente de execução.
+"""Valida o ambiente: imports, GPU e modelo spaCy PT.
 
-Confere se todas as dependências de `REQUIRED` importam, reporta a versão do
-PyTorch e a disponibilidade de GPU/CUDA, e verifica o modelo spaCy
-`pt_core_news_sm`. Não produz artefatos: apenas imprime um diagnóstico e
-retorna código de saída 1 se algo estiver faltando (0 caso contrário).
-
-Rode isto primeiro, antes de qualquer outra etapa.
-
-Uso:
-    python scripts/00_validate_environment.py
+Equivale às células 1.1 e 1.2 do notebook (instalação + setup determinístico).
 """
 
 from __future__ import annotations
@@ -48,7 +40,7 @@ def main() -> int:
         spacy.load("pt_core_news_sm")
         print("spaCy pt_core_news_sm: OK")
     except OSError:
-        print("spaCy pt_core_news_sm AUSENTE, rode: python -m spacy download pt_core_news_sm")
+        print("spaCy pt_core_news_sm AUSENTE — rode: python -m spacy download pt_core_news_sm")
         missing.append("pt_core_news_sm")
 
     if missing:

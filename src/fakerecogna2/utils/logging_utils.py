@@ -1,6 +1,8 @@
-"""Configuração de logging consistente do projeto.
+"""Configuração de logging consistente com a célula 1.3 do notebook.
 
-Cria um logger 'FN' que escreve em `outputs/logs/exp_*.log` e também em stdout.
+A célula original cria um logger 'FN' que escreve em `artifacts/logs/exp_*.log`
+e também em stdout. Aqui replicamos o comportamento, redirecionando para
+`outputs/logs/`.
 """
 
 from __future__ import annotations
@@ -12,14 +14,14 @@ from datetime import datetime
 from ..config import LOGS_DIR
 
 _FORMATTER = logging.Formatter(
-    "[%(asctime)s] %(levelname)s: %(message)s", datefmt="%H:%M:%S"
+    "[%(asctime)s] %(levelname)s — %(message)s", datefmt="%H:%M:%S"
 )
 _LOGGER_NAME = "FN"
 _INITIALIZED = False
 
 
 def setup_logging(name: str = _LOGGER_NAME, level: int = logging.INFO) -> logging.Logger:
-    """Cria/atualiza o logger 'FN'.
+    """Cria/atualiza o logger 'FN' replicando a célula 1.3.
 
     Retorna o logger já configurado com handler de arquivo (em outputs/logs/) e
     handler de stdout.

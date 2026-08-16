@@ -1,4 +1,4 @@
-"""Fine-tuning genérico de qualquer PLM HuggingFace."""
+"""Fine-tuning genérico de qualquer PLM HuggingFace (cells 73, 74)."""
 
 from __future__ import annotations
 
@@ -241,7 +241,7 @@ def evaluate_plm_candidates(
             # (principal_res = primeira seed), pois sao as predicoes dessa seed
             # (principal_res["y_pred"]) que alimentam matriz de confusao,
             # bootstrap CI e a Tabela 1 do artigo. Em multi-seed, results[short]
-            # carrega a MEDIA (mean+/-std), usar a media aqui produziria um F1
+            # carrega a MEDIA (mean+/-std) — usar a media aqui produziria um F1
             # em 16_final_results.csv inconsistente com cm_iid_* / 13_bootstrap_ci.
             # A media multi-seed vive apenas em plms_multiseed.csv / 20_larger_models.csv.
             RESULTS[f"PLM: {short}"] = {

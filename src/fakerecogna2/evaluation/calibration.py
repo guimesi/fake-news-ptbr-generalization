@@ -1,4 +1,4 @@
-"""Calibração: ECE, Brier, reliability diagram."""
+"""Calibração: ECE, Brier, reliability diagram (cell 43)."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ from ..utils.io_utils import save_plot, save_table
 def expected_calibration_error(
     probs: np.ndarray, y: np.ndarray, n_bins: int = CALIBRATION_BINS
 ) -> float:
-    """ECE: distância média entre confidence e accuracy por bin."""
+    """ECE — distância média entre confidence e accuracy por bin."""
     conf, pred = probs.max(1), probs.argmax(1)
     bins = np.linspace(0, 1, n_bins + 1)
     ece = 0.0

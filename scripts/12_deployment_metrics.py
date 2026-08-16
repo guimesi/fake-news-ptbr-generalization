@@ -1,23 +1,6 @@
-"""Etapa 12: métricas de deployment (latência P50/P95/P99, VRAM, disco, Pareto).
+"""Etapa 12 — Métricas de deployment: latência, VRAM, tamanho em disco, Pareto.
 
-Mede latência, uso de memória e tamanho em disco do BERTimbau FT, do ensemble
-Ens3 e do baseline TF-IDF + MLP, e plota a fronteira de Pareto F1 vs latência.
-
-Atenção (reprodutibilidade): rodado isolado, este script NÃO treina o baseline
-TF-IDF + MLP (ele só treina os modelos neurais e o BERTimbau FT). Sem o MLP
-treinado em `ctx.extras['baseline_configs']`, a predição do TF-IDF + MLP cai em
-um fallback aleatório (apenas para o benchmark de latência não quebrar) e emite
-um aviso no log; nesse caso o ponto TF-IDF + MLP no Pareto fica sem sentido. Para
-o resultado correto, use o run_all.py, que treina os baselines antes.
-
-Pré-requisitos: GPU recomendada.
-
-Saídas (outputs/metrics/ e outputs/figures/):
-    22_deployment_metrics.csv, J_disk_sizes_corrected.csv,
-    22_pareto_f1_vs_latency.png
-
-Uso:
-    python scripts/12_deployment_metrics.py
+Cobre Seções 22 e J.
 """
 
 from __future__ import annotations
@@ -38,10 +21,8 @@ from _training import train_bert_classifier, train_deep_ensemble
 
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--n-warmup", type=int, default=5,
-                   help="Iterações de aquecimento por modelo, descartadas (default 5).")
-    p.add_argument("--n-iter", type=int, default=50,
-                   help="Iterações cronometradas por modelo (default 50).")
+    p.add_argument("--n-warmup", type=int, default=5)
+    p.add_argument("--n-iter", type=int, default=50)
     args = p.parse_args()
 
     ctx = prepare_through_features()
@@ -63,14 +44,7 @@ def main() -> int:
                 mlp = model
                 break
         if mlp is None:
-            # Sem o baseline TF-IDF+MLP treinado (rode via run_all.py), cai em
-            # predição aleatória só para o benchmark de latência não quebrar. O
-            # ponto TF-IDF+MLP no Pareto fica sem sentido neste modo isolado.
-            from fakerecogna2.utils import get_logger
-            get_logger().warning(
-                "TF-IDF+MLP nao treinado neste processo: usando predicao aleatoria "
-                "no benchmark de latencia (rode scripts/run_all.py para o resultado correto)."
-            )
+            # Fallback: predição aleatória pra não quebrar (mas avisa)
             return np.random.rand(len(texts), 2)
         return mlp.predict_proba(X)
 
@@ -110,7 +84,7 @@ def main() -> int:
     )
     plot_pareto_f1_latency(df_bench)
 
-    # J.1: Tamanho em disco
+    # J.1 — Tamanho em disco
     models_for_disk = {
         "BERTimbau FT": ctx.bert_clf,
         "Ens3 (CNN+LSTM+ConvLSTM)": [ctx.models["CNN"], ctx.models["LSTM"], ctx.models["ConvLSTM"]],

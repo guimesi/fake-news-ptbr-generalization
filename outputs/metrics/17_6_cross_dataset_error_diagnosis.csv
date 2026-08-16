@@ -1,2 +1,0 @@
-cm_fake_fake,cm_fake_real,cm_real_fake,cm_real_real,fake_to_real_rate,real_to_fake_rate,mean_conf_on_errors,flipped_autodetect
-3587,13,3264,336,0.003611111111111111,0.9066666666666666,0.9374012351036072,True

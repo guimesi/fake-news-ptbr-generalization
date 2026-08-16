@@ -1,21 +1,6 @@
-"""Etapa 8: avaliação cross-dataset OOD (FakeRecogna para Fake.br-Corpus).
+"""Etapa 8 — Avaliação cross-dataset (FakeRecogna ↔ Fake.br-Corpus).
 
-Treina os modelos no FakeRecogna e os avalia no Fake.br-Corpus, com a
-salvaguarda auditável de polaridade (auto-flip quando a acurácia invertida supera
-a direta por mais de 0.05). Faz também um diagnóstico de erros no melhor modelo.
-Aqui roda apenas a direção direta (FakeRecogna para Fake.br); a direção inversa
-(treinar no Fake.br, avaliar no FakeRecogna) está no run_all.py (etapa 10b).
-
-Pré-requisitos: Fake.br-Corpus local em `data.fakebr_local_path`
-(configs/config.yaml). Aborta com código 1 se o corpus não for encontrado.
-
-Saídas (outputs/metrics/):
-    17_cross_dataset_ood.csv, 17_polarity_audit_log.csv,
-    17_6_cross_dataset_error_diagnosis.csv
-
-Uso:
-    python scripts/08_cross_dataset.py
-    python scripts/08_cross_dataset.py --no-bert
+Cobre Seções 17 (OOD direto) e G/H (reverso, por categoria).
 """
 
 from __future__ import annotations
@@ -36,8 +21,7 @@ from _training import train_bert_classifier, train_deep_ensemble
 
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--no-bert", action="store_true",
-                   help="Pula o BERTimbau FT (avalia só o Ens3).")
+    p.add_argument("--no-bert", action="store_true")
     args = p.parse_args()
 
     ctx = prepare_through_features(do_fakebr=True)
@@ -81,14 +65,18 @@ def main() -> int:
     save_table(df_ood, "17_cross_dataset_ood")
     print(df_ood.to_string(index=False))
 
-    # Audit trail da salvaguarda de polaridade.
+    # Audit trail da salvaguarda de polaridade (Seção 4.7).
     save_polarity_audit_log(results)
 
-    # 17.6 Diagnóstico de erros, usando BERT FT (ou ens3 como fallback)
+    # 17.6 Diagnóstico de erros — usando BERT FT (ou ens3 como fallback).
+    # Mesmo pré-processamento e mesma convenção de rótulos (0=real, 1=fake)
+    # da avaliação oficial em evaluate_on_external_corpus.
+    from fakerecogna2.preprocessing.text_cleaning import preprocess_base
+
     probs_fn = predict_bert_ft if ctx.bert_clf is not None else predict_ens3
-    texts_fbr = df_fbr["text"].astype(str).tolist()
+    texts_fbr = df_fbr["text"].astype(str).apply(preprocess_base).tolist()
     probs_fbr = probs_fn(texts_fbr)
-    y_fbr = np.array([{"fake": 0, "real": 1}.get(str(l).lower(), -1) for l in df_fbr["label"]])
+    y_fbr = np.array([{"real": 0, "fake": 1}.get(str(l).lower(), -1) for l in df_fbr["label"]])
     mask = y_fbr >= 0
     error_diagnosis_cross_dataset(
         probs_fbr[mask], y_fbr[mask],

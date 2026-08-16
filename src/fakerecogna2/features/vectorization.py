@@ -1,4 +1,4 @@
-"""Vetorização TF-IDF pra baselines clássicos."""
+"""Vetorização TF-IDF pra baselines clássicos (parte da cell 27)."""
 
 from __future__ import annotations
 

@@ -1,6 +1,6 @@
 """Carregador local do Fake.br-Corpus pra avaliação cross-dataset.
 
-Download:
+Cobre a célula 57 do notebook (Seção 17.1). Download:
 https://github.com/roneysco/Fake.br-Corpus
 """
 
@@ -87,7 +87,7 @@ def _load_text_files(base: Path, version: str) -> pd.DataFrame:
     for label_dir, label_name in [("fake", "fake"), ("true", "real")]:
         d = ver_dir / label_dir
         if not d.exists():
-            log.warning(f"Subpasta {d} não encontrada, pulando.")
+            log.warning(f"Subpasta {d} não encontrada — pulando.")
             continue
         files = sorted(
             d.glob("*.txt"),
@@ -124,8 +124,8 @@ def _load_text_files(base: Path, version: str) -> pd.DataFrame:
 
     df = pd.DataFrame(rows)
     log.info(
-        f"Fake.br-Corpus ({version}): {df.shape}, "
-        f'fake={(df.label=="fake").sum()} real={(df.label=="real").sum()}'
+        f"Fake.br-Corpus ({version}): {df.shape} "
+        f'— fake={(df.label=="fake").sum()} real={(df.label=="real").sum()}'
     )
     return df
 

@@ -1,4 +1,7 @@
-"""Reprodutibilidade: fixa todas as seeds (numpy, torch, cudnn)."""
+"""Reprodutibilidade: fixa todas as seeds (numpy, torch, cudnn).
+
+Equivalente ao bloco final da célula 1.2 e à função `set_seed` da célula 1.3.
+"""
 
 from __future__ import annotations
 
@@ -17,7 +20,10 @@ from ..config import SEED
 
 
 def set_seed(s: int) -> None:
-    """Fixa seeds de numpy, random e torch para uma execução individual."""
+    """Fixa seeds de numpy, random e torch para uma execução individual.
+
+    Cópia fiel da função `set_seed(s)` da célula 1.3 do notebook.
+    """
     random.seed(s)
     np.random.seed(s)
     if _HAS_TORCH:
@@ -27,7 +33,7 @@ def set_seed(s: int) -> None:
 
 
 def set_global_seeds(s: int = SEED, deterministic_cudnn: bool = True) -> None:
-    """Setup determinístico global.
+    """Setup determinístico global, equivalente à célula 1.2.
 
     Inclui PYTHONHASHSEED, cudnn.deterministic e cudnn.benchmark=False.
     """

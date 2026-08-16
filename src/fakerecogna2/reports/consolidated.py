@@ -1,4 +1,7 @@
-"""Tabela consolidada + relatório Markdown/JSON."""
+"""Tabela consolidada + relatório Markdown/JSON.
+
+Cobre as células 53, 55, 85, 86, 87 (Seções 16 e 23) e 116 (Seção K).
+"""
 
 from __future__ import annotations
 
@@ -67,7 +70,7 @@ def build_final_table(
         base = f"{row['F1']*100:.2f}%"
         if row.name in ci_map:
             lo, hi = ci_map[row.name]
-            return f"{base}  [{lo*100:.2f}-{hi*100:.2f}]"
+            return f"{base}  [{lo*100:.2f}–{hi*100:.2f}]"
         return base
 
     df_disp = df_final.copy()
@@ -112,7 +115,7 @@ def build_manifest(
 ) -> str:
     """Gera manifesto com listagem de todos os arquivos em ARTIFACTS_DIR."""
     lines = [
-        f"Manifesto: {datetime.now():%Y-%m-%d %H:%M:%S}",
+        f"Manifesto — {datetime.now():%Y-%m-%d %H:%M:%S}",
         f"Dataset: FakeRecogna 2.0  |  Dispositivo: {device}",
         f"Classes: {class_names}",
         f"Número de amostras finais (abstrativa): {n_samples}",
@@ -151,7 +154,7 @@ def build_consolidated_report(
     results = results if results is not None else RESULTS
 
     lines: list[str] = []
-    lines.append("# Relatório Consolidado: Detecção de Fake News em PT-BR")
+    lines.append("# Relatório Consolidado — Detecção de Fake News em PT-BR")
     lines.append("")
     lines.append(f"**Data de execução:** {datetime.now():%Y-%m-%d %H:%M:%S}")
     lines.append(f"**Dispositivo:** {device}")
@@ -191,7 +194,7 @@ def build_consolidated_report(
             cls_a, cls_b = cls_pair
             for n in [1, 2, 3]:
                 lines.append("")
-                lines.append(f"### n={n}-gramas: top 10 por classe (abstrativa)")
+                lines.append(f"### n={n}-gramas — top 10 por classe (abstrativa)")
                 top_a = _read_csv_if_exists(f"04_logodds_abstrativa_n{n}_top_{cls_a}")
                 top_b = _read_csv_if_exists(f"04_logodds_abstrativa_n{n}_top_{cls_b}")
                 for cls_name, top_df in [(cls_a, top_a), (cls_b, top_b)]:
@@ -206,7 +209,7 @@ def build_consolidated_report(
     # 3. Tabela consolidada IID
     if results:
         lines.append("")
-        lines.append("## 3. Resultados IID: random split da Abstrativa")
+        lines.append("## 3. Resultados IID — random split da Abstrativa")
         lines.append("")
         df_final = pd.DataFrame(results).T.round(4)
         df_final.index.name = "Modelo"

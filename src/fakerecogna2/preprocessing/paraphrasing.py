@@ -1,6 +1,6 @@
-"""Paraphrasing Equalizer: TextRank + dataset equalizado.
+"""Paraphrasing Equalizer — TextRank + dataset equalizado.
 
-O ensemble virou
+Cobre as células 76, 77, 78 (Seção 21). A célula 78 (ensemble) virou
 parte do orquestrador `scripts/11_paraphrasing_equalizer.py` (chama
 preprocessing aqui + features + models + evaluation).
 """
@@ -58,7 +58,7 @@ def estimate_n_sentences(
     """
     avg_len_real = df[df[label_col] == 1][text_col].str.split().str.len().mean()
     avg_len_fake = df[df[label_col] == 0][text_col].str.split().str.len().mean()
-    log.info(f"Média tokens, real: {avg_len_real:.0f}, fake: {avg_len_fake:.0f}")
+    log.info(f"Média tokens — real: {avg_len_real:.0f}, fake: {avg_len_fake:.0f}")
     n_sent = max(2, int(avg_len_real / 20))
     log.info(f"Usando n_sentences={n_sent} para equalizar comprimento.")
     return n_sent
@@ -98,7 +98,7 @@ def build_equalized_dataset(
     lens_fake = out[out[label_col] == fake_label][out_col].str.split().str.len().mean()
     lens_real = out[out[label_col] != fake_label][out_col].str.split().str.len().mean()
     log.info(
-        f"Após equalização, real: {lens_real:.0f} tokens, fake: {lens_fake:.0f} tokens"
+        f"Após equalização — real: {lens_real:.0f} tokens, fake: {lens_fake:.0f} tokens"
     )
     return out
 

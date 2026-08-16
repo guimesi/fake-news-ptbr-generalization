@@ -1,21 +1,13 @@
-"""Etapa 2: EDA textual, preprocessing, splits e embeddings BERTimbau.
+"""Etapa 2 — EDA textual + pré-processamento + splits + embeddings BERTimbau.
 
-Faz o mesmo setup da etapa 1 e, por padrão, extrai os embeddings BERTimbau base
-(token-level e [CLS]) e a matriz TF-IDF. As checagens de integridade rodam
-sempre; a análise lexical (log-odds com prior de Dirichlet e Chi quadrado sobre
-TF-IDF) roda salvo `--skip-logodds`.
+Cobre Seções 3 (integridade), 4 (log-odds), 5.1 (preprocess), 6.1 (splits) e
+7 (embeddings BERTimbau) do notebook.
 
-Pré-requisitos: nenhum script anterior (refaz o setup). Não treina modelos.
+Uso::
 
-Saídas (outputs/metrics/, quando a análise lexical roda):
-    04_logodds_abstrativa_n<n>_top_<classe>.csv (uni/bi/tri-gramas),
-    04_chi2_top_abstrativa.csv
-Mais as figuras de integridade da etapa 1.
-
-Uso:
-    python scripts/02_preprocess_text.py                 # padrão (com embeddings)
-    python scripts/02_preprocess_text.py --skip-logodds  # pula análise lexical
-    python scripts/02_preprocess_text.py --no-embeddings # só até o preprocessing
+    python scripts/02_preprocess_text.py                # padrão
+    python scripts/02_preprocess_text.py --skip-logodds # pula análise lexical
+    python scripts/02_preprocess_text.py --no-embeddings # só até preprocessing
 """
 
 from __future__ import annotations

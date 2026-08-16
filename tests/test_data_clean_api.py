@@ -1,6 +1,6 @@
 """Testes pra API do subpacote `fakerecogna2.data`.
 
-Cobrem loading/splits/integrity sem baixar o dataset real: usam DataFrames
+Cobrem loading/splits/integrity sem baixar o dataset real — usam DataFrames
 sintéticos pequenos.
 """
 
@@ -181,7 +181,7 @@ def test_source_splits_returns_none_without_source():
 
 
 # ---------------------------------------------------------------------------
-# integrity (smoke: apenas roda sem crashar)
+# integrity (smoke — apenas roda sem crashar)
 # ---------------------------------------------------------------------------
 def test_source_class_analysis_no_source_column():
     df = pd.DataFrame({"label": ["fake", "real"], "text": ["a", "b"]})

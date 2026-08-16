@@ -1,4 +1,4 @@
-"""Fine-tuning fim-a-fim do BERTimbau."""
+"""Fine-tuning fim-a-fim do BERTimbau (cell 37)."""
 
 from __future__ import annotations
 
@@ -85,13 +85,23 @@ def train_bertimbau_finetune(
     seed: int = 42,
     result_key: str = "BERTimbau FT",
 ) -> tuple[BERTClassifier, torch.Tensor]:
-    """Treina BERTimbau FT com early stop. Registra em RESULTS. Retorna (clf, probs_test)."""
+    """Treina BERTimbau FT com early stop. Registra em RESULTS. Retorna (clf, probs_test).
+
+    O backbone recebido é DEEPCOPIADO antes do fine-tuning: sem isso, as
+    últimas camadas de `bert_model` eram mutadas in-place e qualquer etapa
+    posterior que reutilizasse o mesmo objeto para extrair embeddings (p.ex.
+    `make_predict_ens3` nas avaliações OOD) usava um encoder diferente do
+    que gerou os embeddings de treino (fragilidade apontada na auditoria da
+    qualificação; isolamento previsto na Tarefa 2 do Cap. 6).
+    """
+    import copy
+
     set_seed(seed)
     b_tr = make_bert_loader(tokenizer, X_train, y_train, batch_size, max_seq_len)
     b_vl = make_bert_loader(tokenizer, X_val, y_val, batch_size, max_seq_len)
     b_te = make_bert_loader(tokenizer, X_test, y_test, batch_size, max_seq_len)
 
-    clf = BERTClassifier(bert_model, num_classes).to(device)
+    clf = BERTClassifier(copy.deepcopy(bert_model), num_classes).to(device)
     crit = nn.CrossEntropyLoss(label_smoothing=label_smoothing)
     opt = optim.AdamW(
         [p for p in clf.parameters() if p.requires_grad], lr=lr, weight_decay=weight_decay

@@ -1,4 +1,4 @@
-"""Attention Rollout: Abnar & Zuidema 2020."""
+"""Attention Rollout — Abnar & Zuidema 2020 (Seção 18.2, cell 66)."""
 
 from __future__ import annotations
 
@@ -45,7 +45,7 @@ class AttentionRollout:
         """Rollout: percorre todas as camadas com identidade + normalização por linha.
 
         Returns:
-            (tokens_validos, scores): scores são a linha do [CLS] da matriz final.
+            (tokens_validos, scores) — scores são a linha do [CLS] da matriz final.
         """
         import torch
 

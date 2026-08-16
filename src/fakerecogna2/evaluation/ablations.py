@@ -1,6 +1,6 @@
-"""Ablações finais (A, B, D, E e quartil curto).
+"""Ablações finais (Seções A, B, D, E e quartil curto).
 
-As ablações
+Cobre as células 94 (A.2), 96 (B.1), 100 (D.1), 102 (E.1) e 117. As ablações
 C (extrativa) e F (equalizador linguístico) ficam nas funções de
 `models.train_ensemble_on_variant` e `preprocessing.build_nometatext_dataset`
 respectivamente (chamadas pelos scripts 04 e 11).
@@ -36,7 +36,7 @@ from ..utils.logging_utils import get_logger
 log = get_logger()
 
 
-# -- A.2: Pré-processamento ----------------------------------------
+# -- A.2: Pré-processamento (cell 94) ----------------------------------------
 def preprocessing_ablation(
     df: pd.DataFrame,
     n_samples: int = 15000,
@@ -75,14 +75,14 @@ def preprocessing_ablation(
         log.info(f"  {prep_name}: Acc={rows[-1]['Accuracy']:.4f} F1={rows[-1]['F1']:.4f}")
 
     df_out = pd.DataFrame(rows).round(4)
-    print("\n=== Ablação A: Pré-processamento ===")
+    print("\n=== Ablação A — Pré-processamento ===")
     print(tabulate(df_out, headers="keys", tablefmt="github", showindex=False))
     if save_as is not None:
         save_table(df_out, save_as)
     return df_out
 
 
-# -- B.1: Comprimento de sequência ---------------------------------
+# -- B.1: Comprimento de sequência (cell 96) ---------------------------------
 def seqlen_ablation(
     ctx,
     seq_len: int = 300,
@@ -140,7 +140,7 @@ def seqlen_ablation(
             {"SEQ_LEN": seq_len, "Ensemble F1": f1_new},
         ]
     ).round(4)
-    print("\n=== Ablação B: Comprimento de sequência ===")
+    print("\n=== Ablação B — Comprimento de sequência ===")
     print(tabulate(df, headers="keys", tablefmt="github", showindex=False))
     if save_as is not None:
         save_table(df, save_as)
@@ -152,7 +152,7 @@ def seqlen_ablation(
     return df
 
 
-# -- D.1: Learning curve -------------------------------------------
+# -- D.1: Learning curve (cell 100) -------------------------------------------
 def learning_curve_ablation(
     ctx,
     fractions: tuple[float, ...] = (0.2, 0.4, 0.6, 0.8, 1.0),
@@ -222,7 +222,7 @@ def learning_curve_ablation(
             torch.cuda.empty_cache()
 
     df = pd.DataFrame(rows).round(4)
-    print("\n=== Ablação D: Learning curve ===")
+    print("\n=== Ablação D — Learning curve ===")
     print(tabulate(df, headers="keys", tablefmt="github", showindex=False))
     if save_as is not None:
         save_table(df, save_as)
@@ -233,7 +233,7 @@ def learning_curve_ablation(
         ax.plot(df["Fração"] * 100, df["F1"], "s-", lw=2, label="F1 macro", color="#C2185B")
         ax.set_xlabel("% dados de treino")
         ax.set_ylabel("Score")
-        ax.set_title("Learning curve: Ensemble CNN+LSTM", fontweight="bold")
+        ax.set_title("Learning curve — Ensemble CNN+LSTM", fontweight="bold")
         ax.legend()
         ax.grid(alpha=0.3)
         plt.tight_layout()
@@ -241,7 +241,7 @@ def learning_curve_ablation(
     return df
 
 
-# -- E.1: Performance por faixa -----------------------------------
+# -- E.1: Performance por faixa (cell 102) -----------------------------------
 def performance_by_length_ensemble(
     ctx,
     predict_fn: Callable[[list[str]], np.ndarray],
@@ -266,13 +266,13 @@ def performance_by_length_ensemble(
         if mk.sum() > 0:
             rows.append({
                 "Faixa": nm,
-                "Tokens": f"{int(bins[i])}-{int(bins[i+1]-1)}",
+                "Tokens": f"{int(bins[i])}–{int(bins[i+1]-1)}",
                 "N": int(mk.sum()),
                 "Acc": accuracy_score(y[mk], preds[mk]),
                 "F1": f1_score(y[mk], preds[mk], average="macro", zero_division=0),
             })
     df = pd.DataFrame(rows).round(4)
-    print(f"\n=== Ablação E: Performance por comprimento ({model_name}) ===")
+    print(f"\n=== Ablação E — Performance por comprimento ({model_name}) ===")
     print(tabulate(df, headers="keys", tablefmt="github", showindex=False))
     if save_as is not None:
         save_table(df, save_as)
@@ -297,7 +297,7 @@ def performance_by_length_ensemble(
     return df
 
 
-# -- Quartil curto -------------------------------------------------
+# -- Quartil curto (cell 117) -------------------------------------------------
 def short_quartile_class_distribution(
     X_test: list[str],
     y_test,

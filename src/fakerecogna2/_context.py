@@ -1,6 +1,6 @@
 """Estado dinâmico compartilhado entre etapas do pipeline.
 
-Substitui as variáveis globais que circulavam entre as etapas do pipeline
+Substitui as variáveis globais que circulavam entre as células do notebook
 (`df`, `tokenizer`, `bert_model`, `cls_train`, etc.). Scripts criam um
 `ExperimentContext`, passam ele às funções dos subpacotes, e cada função
 muta os campos relevantes in-place (ou retorna valores que o script atribui).
@@ -77,17 +77,17 @@ class ExperimentContext:
     predictions: dict[str, np.ndarray] = field(default_factory=dict)
     probabilities: dict[str, np.ndarray] = field(default_factory=dict)
 
-    # --- Métricas agregadas (replica `RESULTS`) ---------------
+    # --- Métricas agregadas (replica `RESULTS` do notebook) ---------------
     results: dict[str, Any] = field(default_factory=dict)
 
     # --- Slot genérico p/ qualquer estado extra ---------------------------
     extras: dict[str, Any] = field(default_factory=dict)
 
     # ------------------------------------------------------------------------
-    # Ponte para namespaces globais (útil pra integrações ad-hoc)
+    # Ponte para namespaces estilo notebook (útil pra integrações ad-hoc)
     # ------------------------------------------------------------------------
     def to_namespace(self) -> dict[str, Any]:
-        """Exporta campos para um dict com os nomes globais.
+        """Exporta campos para um dict com os nomes globais "estilo notebook".
 
         Útil pra rodar código legado que usa nomes bare como ``df``,
         ``tokenizer``, ``DEVICE``, ``MAX_SEQ_LEN``. Campos ``None`` não
@@ -129,7 +129,7 @@ class ExperimentContext:
         return ns
 
     def update_from_namespace(self, ns: dict[str, Any]) -> None:
-        """Atualiza o contexto a partir de um dict de nomes globais.
+        """Atualiza o contexto a partir de um dict estilo notebook.
 
         Olha o ``ns`` e copia de volta qualquer variável cujo nome bate
         com um campo conhecido. Útil pra ler resultados de scripts ad-hoc

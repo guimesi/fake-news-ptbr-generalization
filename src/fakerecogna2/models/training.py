@@ -1,4 +1,4 @@
-"""Loop de treinamento + avaliação + multi-seed."""
+"""Loop de treinamento + avaliação + multi-seed (cells 32 e 33)."""
 
 from __future__ import annotations
 

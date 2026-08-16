@@ -1,6 +1,7 @@
 """Pipelines de pré-processamento de texto.
 
-Expõe `preprocess_base` e `preprocess_base_A`.
+Cobre as células 21 (Seção 5.1) e 93 (Seção A.1). Funções equivalentes às
+duplicadas no notebook (`preprocess_base` / `preprocess_base_A`).
 """
 
 from __future__ import annotations

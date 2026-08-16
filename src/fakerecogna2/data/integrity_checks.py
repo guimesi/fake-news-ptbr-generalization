@@ -40,7 +40,7 @@ def source_class_analysis(df: pd.DataFrame, name: str) -> pd.DataFrame:
         DataFrame com fontes exclusivas a 1 classe (≥5 amostras). Vazio se nenhuma.
     """
     if "source" not in df.columns:
-        log.info(f"{name}: sem coluna source, pulando")
+        log.info(f"{name}: sem coluna source — pulando")
         return pd.DataFrame()
 
     pv = pd.crosstab(df["source"], df["label"])
@@ -93,7 +93,7 @@ def length_by_class(df: pd.DataFrame, name: str) -> pd.DataFrame:
         b = df[df["label"] == classes[1]]["_n_tokens"]
         _u, p = stats.mannwhitneyu(a, b, alternative="two-sided")
         log.info(
-            f"{name}: Mann-Whitney U no comprimento: p={p:.3e} "
+            f"{name}: Mann-Whitney U no comprimento — p={p:.3e} "
             "(p<.05 = comprimento correlacionado à classe → risco de atalho)"
         )
 
@@ -101,7 +101,7 @@ def length_by_class(df: pd.DataFrame, name: str) -> pd.DataFrame:
     for cls in df["label"].unique():
         sub = df[df["label"] == cls]["_n_tokens"]
         ax.hist(sub.clip(0, 1500), bins=50, alpha=0.55, label=str(cls))
-    ax.set_title(f"{name}: tokens por classe")
+    ax.set_title(f"{name} — tokens por classe")
     ax.set_xlabel("# tokens")
     ax.legend()
     plt.tight_layout()
@@ -116,7 +116,7 @@ def plot_length_per_class_combined(
 ) -> None:
     """Plota distribuição de tokens por classe em Abstrativa e Extrativa lado a lado.
 
-    Cada subplot mostra,
+    Corresponde à Figura 2 do Cap. 5 da dissertação. Cada subplot mostra,
     para uma variante, dois histogramas (uma cor por classe) compartilhando
     o mesmo eixo de tokens (clipado em 1500 para excluir outliers).
     """
@@ -131,7 +131,7 @@ def plot_length_per_class_combined(
         for cls in sorted(df["label"].unique()):
             sub = df[df["label"] == cls]["_n_tokens"]
             ax.hist(sub.clip(0, 1500), bins=50, alpha=0.55, label=str(cls))
-        ax.set_title(f"{name}: tokens por classe")
+        ax.set_title(f"{name} — tokens por classe")
         ax.set_xlabel("# tokens")
         ax.legend()
     axes[0].set_ylabel("# documentos")

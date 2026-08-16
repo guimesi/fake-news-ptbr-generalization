@@ -1,4 +1,4 @@
-"""Ensembles: grid search de pesos + ensemble no dataset Extrativo."""
+"""Ensembles: grid search de pesos + ensemble no dataset Extrativo (cells 35, 39, 98)."""
 
 from __future__ import annotations
 

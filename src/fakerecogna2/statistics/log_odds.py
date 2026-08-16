@@ -1,6 +1,6 @@
 """log-odds com Dirichlet prior (Monroe, Colaresi & Quinn 2008) + Chi²/TF-IDF.
 
-Análise lexical das classes.
+Cobre as células 15–18 do notebook (Seção 4): análise lexical das classes.
 """
 
 from __future__ import annotations
@@ -92,7 +92,7 @@ def lex_analysis(
         cb, _ = build_ngram_counts(df[df["label"] == cls_b]["text"].astype(str), n=ngram)
         lo = log_odds_dirichlet(Counter(ca), Counter(cb))
         results[ngram] = lo
-        print(f"\n=== {name}, n={ngram} ===")
+        print(f"\n=== {name} — n={ngram} ===")
         print(f'Top {top_k} associados a "{cls_a}":')
         print(lo.head(top_k)[["term", "count_a", "count_b", "z"]].to_string(index=False))
         print(f'\nTop {top_k} associados a "{cls_b}":')

@@ -1,24 +1,7 @@
-"""Etapa 5: avaliação robusta (bootstrap, McNemar, calibração, CV, stress test NER).
+"""Etapa 5 — Avaliação robusta: bootstrap, calibração, CV, stress tests, tabela final.
 
-Treina os modelos neurais (e o BERTimbau FT, salvo `--no-bert`) e roda a bateria
-de avaliação: bootstrap CI (F1/Accuracy), McNemar pareado com correção de Holm,
-ECE/Brier mais reliability diagram, 5-fold CV e o stress test de NER masking. Ao
-final monta a tabela final, o gráfico comparativo e o classification report.
-
-Atenção: os splits por fonte e temporal NÃO são avaliados aqui (ficam como TODO
-neste script). Para os stress tests de fonte/temporal/anti-viés use o run_all.py
-(etapas 8b a 8d).
-
-Pré-requisitos: nenhum script anterior (treina internamente). GPU recomendada.
-
-Saídas (outputs/metrics/ e outputs/figures/):
-    13_bootstrap_ci.csv, 13_mcnemar_pairwise_holm.csv, 13_calibration.csv,
-    13_reliability.png, 13_cross_validation.csv, 14_ner_masking.csv,
-    16_final_results.csv, 16_final_comparison.png
-
-Uso:
-    python scripts/05_evaluate_models.py
-    python scripts/05_evaluate_models.py --no-cv --skip-stress   # mais rápido
+Cobre Seções 13 (bootstrap, McNemar, calibração, 5-fold CV), 14 (stress tests
+fonte/NER/temporal) e 16 (tabela consolidada + gráfico + classification report).
 """
 
 from __future__ import annotations
@@ -36,10 +19,8 @@ from _training import train_bert_classifier, train_deep_ensemble
 
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--epochs", type=int, default=30,
-                   help="Épocas dos modelos neurais (default 30).")
-    p.add_argument("--no-bert", action="store_true",
-                   help="Pula o fine-tuning do BERTimbau FT.")
+    p.add_argument("--epochs", type=int, default=30)
+    p.add_argument("--no-bert", action="store_true")
     p.add_argument("--no-cv", action="store_true", help="Pula 5-fold CV (caro).")
     p.add_argument("--skip-stress", action="store_true", help="Pula stress tests.")
     args = p.parse_args()
@@ -118,12 +99,12 @@ def main() -> int:
         preds_orig = {k: ctx.predictions[k] for k in ctx.models.keys()}
         ner_ablation_table(ctx.y_test, preds_orig, preds_masked)
 
-        # Split por fonte/temporal, se houver
+        # Split por fonte/temporal — se houver
         if "splits_source" in ctx.extras:
-            # TODO: rodar ensemble no source split, requer re-extração de embeddings
+            # TODO: rodar ensemble no source split — requer re-extração de embeddings
             pass
         if "splits_temporal" in ctx.extras:
-            # TODO: rodar ensemble no temporal split, idem
+            # TODO: rodar ensemble no temporal split — idem
             pass
 
     # 16 Tabela final + comparativo + classification report

@@ -1,4 +1,4 @@
-"""Bootstrap CI para F1 e Accuracy."""
+"""Bootstrap CI para F1 e Accuracy (cell 41)."""
 
 from __future__ import annotations
 

@@ -1,19 +1,7 @@
-"""Etapa 11: Paraphrasing Equalizer e equalizador linguístico.
+"""Etapa 11 — Paraphrasing Equalizer + Equalizador Linguístico (Seções 21 e F).
 
-Treina o ensemble CNN+LSTM em duas versões equalizadas do dataset (sumarização
-extrativa TextRank do lado fake para igualar o comprimento médio, e remoção de
-metatexto de fact-checking) e compara com o ORIGINAL para isolar viés de estilo
-e de metatexto. Imprime e salva a tabela com o delta de F1.
-
-Pré-requisitos: nenhum script anterior (treina internamente; reextrai embeddings
-por variante). GPU recomendada.
-
-Saídas (outputs/metrics/): 21_paraphrasing_equalizer.csv
-
-Uso:
-    python scripts/11_paraphrasing_equalizer.py
-    python scripts/11_paraphrasing_equalizer.py --no-paraphrasing  # só sem-metatexto
-    python scripts/11_paraphrasing_equalizer.py --no-metatext      # só sumarização
+Treina ensemble CNN+LSTM em duas versões equalizadas do dataset (sumarização
+e remoção de metatexto) e compara com o ORIGINAL pra isolar viés de estilo.
 """
 
 from __future__ import annotations
@@ -65,8 +53,7 @@ def _run_variant(ctx, df_variant, text_col: str, suffix: str, epochs: int = 15):
 
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--epochs", type=int, default=15,
-                   help="Épocas por variante (default 15).")
+    p.add_argument("--epochs", type=int, default=15)
     p.add_argument("--no-paraphrasing", action="store_true", help="Pula sumarização TextRank.")
     p.add_argument("--no-metatext", action="store_true", help="Pula equalizador metatexto.")
     args = p.parse_args()

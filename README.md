@@ -4,8 +4,8 @@ Artefato de reprodutibilidade da qualificação de mestrado do autor e da
 dissertação de mestrado em andamento sobre detecção de fake news em português
 brasileiro com o dataset
 [FakeRecogna 2.0](https://huggingface.co/datasets/recogna-nlp/fakerecogna2-abstrativa).
-Parte dos resultados foi sistematizada em manuscrito submetido ao ENIAC 2026,
-atualmente em avaliação. O repositório implementa, de ponta a ponta, o
+Parte dos resultados foi sistematizada em artigo **aceito para publicação no
+ENIAC 2026** (Silva & Bianchi; a publicar nos anais). O repositório implementa, de ponta a ponta, o
 protocolo experimental completo: carregamento e auditoria de dados,
 pré-processamento, extração de features, treinamento de 17 configurações de
 modelo, avaliação estatística robusta, explicabilidade (XAI), robustez a
@@ -63,16 +63,21 @@ Para isso, o experimento combina três frentes:
 
 Este código é o artefato de reprodutibilidade da qualificação de mestrado do
 autor, concluída em agosto de 2026, e parte da dissertação de mestrado em
-andamento. Parte dos resultados foi sistematizada em manuscrito submetido ao
-ENIAC 2026, atualmente em avaliação, sobre lacunas de generalização e
+andamento. Parte dos resultados foi sistematizada em artigo aceito para
+publicação no ENIAC 2026, sobre lacunas de generalização e
 aprendizado por atalho em detecção de fake news em português brasileiro. O
 repositório foi organizado para que um avaliador, parecerista ou pesquisador
 externo consiga reproduzir todos os experimentos relatados, inspecionar as
 decisões metodológicas e auditar os artefatos gerados.
 
 Nota: as métricas e figuras versionadas em `outputs/` correspondem à versão
-dos experimentos utilizada na qualificação de mestrado e no manuscrito
-submetido ao ENIAC 2026.
+final dos experimentos (agosto/2026), que incorpora as correções realizadas
+durante a revisão do ENIAC 2026: alinhamento canônico de rótulos no
+cross-dataset (fixado antes de qualquer predição, sem inversão automática),
+isolamento do backbone BERTimbau nas avaliações a jusante do fine-tuning,
+reexecução limpa da avaliação cross-dataset nas duas direções e as novas
+sondas de atalho. O histórico dessas mudanças está descrito em
+`docs/experiment_overview.md` (seção "Atualizações de agosto/2026").
 
 ## 3. A tarefa de classificação
 
@@ -139,7 +144,7 @@ FakeRecogna 2.0 é baixado do Hub e o Fake.br-Corpus precisa ser obtido à parte
 │   ├── models/                     modelos treinados (não versionados)
 │   ├── explanations/              reservado para artefatos de XAI
 │   └── .cache/                     results.json e results_multiseed.json (PersistentDict)
-├── scripts/                        16 executáveis numerados + 2 helpers
+├── scripts/                        19 executáveis numerados + 2 helpers
 │   ├── 00_validate_environment.py  valida imports, GPU e modelo spaCy
 │   ├── 01_prepare_data.py          carregamento, integridade, preprocessing, splits
 │   ├── 02_preprocess_text.py       EDA lexical + embeddings BERTimbau + TF-IDF
@@ -156,6 +161,9 @@ FakeRecogna 2.0 é baixado do Hub e o Fake.br-Corpus precisa ser obtido à parte
 │   ├── 13_ablations.py             ablações A, B, D, E e quartil curto
 │   ├── 14_generate_report.py       relatório consolidado (Markdown + JSON)
 │   ├── 15_xai_error_integration.py relatório standalone XAI versus erros
+│   ├── 16_shortcut_probes.py       sondas de atalho (LogReg em comprimento/top-K/metadados)
+│   ├── 17_cross_dataset_inverse.py cross-dataset inverso (Fake.br -> FakeRecogna), standalone
+│   ├── 18_cross_dataset_direct_clean.py  cross-dataset direto do Ens3 com backbone intocado
 │   ├── run_all.py                  pipeline completo em um único processo
 │   ├── _pipeline.py                helpers de setup (não executável)
 │   └── _training.py                helpers de treino (não executável)
@@ -220,7 +228,7 @@ consistente. Para reproduzir o experimento inteiro sem retrabalho, use o
 | `05_evaluate_models.py` | Bootstrap, McNemar, calibração, CV, NER masking, tabela final | nenhum | `13_*`, `14_ner_masking`, `16_final_results`, `16_final_comparison.png` |
 | `06_statistical_analysis.py` | Log-odds de Dirichlet, Chi quadrado e McNemar | nenhum | `04_logodds_*`, `04_chi2_*`, `13_mcnemar_pairwise_holm` |
 | `07_explainability.py` | LIME, Integrated Gradients, Attention Rollout, estabilidade | nenhum | `15_lime_*`, `I_lime_stability`, figuras em `figures/lime/` |
-| `08_cross_dataset.py` | Cross-dataset OOD direto com salvaguarda de polaridade | Fake.br-Corpus local | `17_cross_dataset_ood`, `17_polarity_audit_log` |
+| `08_cross_dataset.py` | Cross-dataset OOD direto com alinhamento canônico de rótulos e verificação de sanidade | Fake.br-Corpus local | `17_cross_dataset_ood`, `17_polarity_audit_log` |
 | `09_adversarial_robustness.py` | Typos, deleção, swap e back-translation | nenhum (baixa MarianMT) | `19_adversarial_robustness` |
 | `10_plm_finetune.py` | Fine-tuning de BERTimbau-large, XLM-R, mDeBERTa-v3 | nenhum (baixa vários GB) | `20_larger_models`, matrizes por PLM |
 | `11_paraphrasing_equalizer.py` | Equalização de estilo (TextRank) e de metatexto | nenhum | `21_paraphrasing_equalizer` |
@@ -228,6 +236,9 @@ consistente. Para reproduzir o experimento inteiro sem retrabalho, use o
 | `13_ablations.py` | Ablações A, B, D, E e quartil curto | nenhum | `preprocessing_ablation`, `seqlen_ablation`, `learning_curve`, etc. |
 | `14_generate_report.py` | Relatório consolidado lendo os CSVs já gerados | rodar etapas anteriores | `outputs/relatorio_final.md`, `outputs/resultados.json` |
 | `15_xai_error_integration.py` | Relatório standalone cruzando XAI e erros | CSVs de XAI e de erros já gerados | `xai_err_consolidated_standalone.md` |
+| `16_shortcut_probes.py` | Sondas de atalho: LogReg usando apenas nº de tokens, top-K termos (log-odds do treino) ou metadados | nenhum | `23_shortcut_probes`, `23_test_support_by_year` |
+| `17_cross_dataset_inverse.py` | Cross-dataset inverso (treina no Fake.br, avalia no FakeRecogna), standalone com backbone limpo | Fake.br-Corpus local | `17_cross_dataset_inverse_ood`, `cm_ood_inverse_*` |
+| `18_cross_dataset_direct_clean.py` | Reexecução da direção direta do Ens3 com backbone intocado (regrava só linhas/CMs do Ens3) | Fake.br-Corpus local | `17_cross_dataset_ood` (linhas Ens3), `cm_ood_ens3_*` |
 | `run_all.py` | Pipeline completo em um processo | nenhum | todas as saídas acima |
 
 Diferenças importantes entre os scripts isolados e o `run_all.py` estão
@@ -236,7 +247,9 @@ documentadas nas docstrings de cada script. As mais relevantes:
 - `05_evaluate_models.py` roda apenas o stress test de NER masking; os splits por
   fonte, temporal e anti-viés rodam somente no `run_all.py` (etapas 8b a 8d).
 - `08_cross_dataset.py` faz apenas a direção direta (FakeRecogna para Fake.br); a
-  direção inversa fica no `run_all.py` (etapa 10b).
+  direção inversa fica no `run_all.py` (etapa 10b) ou no standalone
+  `17_cross_dataset_inverse.py`. Os números oficiais de cross-dataset foram
+  gerados pelos standalones `17` e `18` (backbone limpo).
 - `10_plm_finetune.py` usa uma seed quando rodado isolado; o `run_all.py` roda
   multi-seed via `--trans-seeds`.
 - `12_deployment_metrics.py`, rodado isolado, não treina o baseline TF-IDF + MLP,
@@ -385,7 +398,9 @@ Tabelas e relatórios principais (`outputs/metrics/`):
 | `cm_<contexto>_<modelo>_cm.csv` e `_per_class.csv` | Matrizes de confusão e métricas por classe (IID, fonte, temporal, anti-viés, OOD) |
 | `error_distrib_<modelo>_by_{fonte,categoria,year,confidence}.csv` | Distribuição de erros estratificada |
 | `17_cross_dataset_ood.csv`, `17_cross_dataset_delta.csv`, `17_cross_dataset_inverse_ood.csv` | Cross-dataset direto, delta e inverso |
-| `17_polarity_audit_log.csv` | Auditoria da salvaguarda de polaridade no cross-dataset |
+| `17_polarity_audit_log.csv` | Verificação de sanidade de polaridade no cross-dataset (auditoria; nunca altera predições) |
+| `23_shortcut_probes.csv` | Sondas de atalho: F1 de LogReg usando apenas comprimento, top-K termos ou metadados |
+| `23_test_support_by_year.csv` | Suporte por classe × ano no conjunto de teste oficial |
 | `19_adversarial_robustness.csv` | F1 sob typos, deleção, swap e back-translation |
 | `20_larger_models.csv`, `plms_multiseed.csv` | PLMs maiores (BERTimbau-large, XLM-R, mDeBERTa) |
 | `22_deployment_metrics.csv`, `J_disk_sizes_corrected.csv`, `J_parameters_audit.csv` | Latência, VRAM, disco e contagem de parâmetros |
@@ -497,10 +512,12 @@ As 17 configurações de modelo:
   erros existem para tornar esse efeito mensurável.
 - **Determinismo em GPU.** Mesmo com seeds fixas, operações em GPU podem variar
   ligeiramente entre versões de hardware, CUDA e cuDNN.
-- **Salvaguarda de polaridade no cross-dataset.** O auto-flip de rótulos quando
-  a acurácia invertida supera a direta por mais de 0.05 é registrado em log de
-  auditoria (`17_polarity_audit_log.csv`); o limiar é uma escolha de projeto e
-  deve ser considerado ao interpretar os resultados inversos.
+- **Alinhamento de rótulos no cross-dataset.** O mapeamento de rótulos entre
+  corpora é fixado antes de qualquer predição (convenção canônica: 0 = real,
+  1 = fake, derivada da documentação e da estrutura dos corpora). Uma
+  verificação de sanidade compara a acurácia direta com a de uma inversão
+  hipotética e registra alerta em `17_polarity_audit_log.csv` caso indique
+  erro de configuração — sem nunca alterar as predições (não há auto-flip).
 - **Recursos manuais.** A lista de metatexto de fact-checking (equalizador) e o
   mapa de teclado das perturbações de typo (layout QWERTY) são heurísticas
   construídas manualmente.
@@ -542,20 +559,29 @@ As 17 configurações de modelo:
 pytest tests/ -v
 ```
 
-São 40 testes que rodam offline, sem GPU, em cerca de 6 segundos. Cobrem:
+São 43 testes que rodam offline, sem GPU, em cerca de 7 segundos. Cobrem:
 importabilidade dos subpacotes, carregamento de `config.py`, instanciação do
 `ExperimentContext`, funções da API de `data/` com DataFrames sintéticos,
-métricas básicas (`standard_report`) e a persistência do `PersistentDict`. Os
+métricas básicas (`standard_report`), as sondas de atalho (dados sintéticos)
+e a persistência do `PersistentDict`. Os
 dois testes que abrem subprocessos exigem o pacote instalado (`pip install -e .`)
 ou `PYTHONPATH` apontando para `src/`.
 
 ## 17. Citação acadêmica
 
-Enquanto o manuscrito submetido ao ENIAC 2026 estiver em avaliação, cite este
-repositório (ver `CITATION.cff`) e entre em contato com o autor para obter a
-referência atualizada do manuscrito. Não utilize dados de publicação
-provisórios: autores, título, veículo e ano definitivos serão divulgados após
-a decisão editorial.
+O artigo associado foi **aceito para publicação no ENIAC 2026** (Encontro
+Nacional de Inteligência Artificial e Computacional). Enquanto os anais não
+são publicados, cite como aceito/a publicar:
+
+> SILVA, Guilherme O.; BIANCHI, Reinaldo A. C. Desempenho alto, generalização
+> frágil: lacunas de generalização e aprendizado por atalho em detecção de
+> fake news em português brasileiro. In: Anais do Encontro Nacional de
+> Inteligência Artificial e Computacional (ENIAC 2026). SBC, 2026. Aceito
+> para publicação.
+
+Para citar o software, use o `CITATION.cff` deste repositório. Após a
+publicação nos anais, a referência definitiva (páginas/DOI) será atualizada
+aqui.
 
 ## 18. Licença e uso acadêmico
 
