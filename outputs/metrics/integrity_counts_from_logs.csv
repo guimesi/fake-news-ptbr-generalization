@@ -1,0 +1,15 @@
+﻿item,variante,valor,fonte
+dedup_exatas_sha1,abstrativa,76.0,exp_20260525_222722.log:5
+dedup_near_minhash,abstrativa,348.0,exp_20260525_222722.log:5
+n_pos_dedup,abstrativa,52376.0,exp_20260525_222722.log:5
+dedup_exatas_sha1,extrativa,81.0,exp_20260525_222722.log:8
+dedup_near_minhash,extrativa,410.0,exp_20260525_222722.log:8
+n_pos_dedup,extrativa,52309.0,exp_20260525_222722.log:8
+n_final_pipeline,abstrativa,52352.0,resultados.json::meta.n_abstrativa
+fontes_classe_unica,abstrativa,14.0,exp_20260524_221000.log:9
+amostras_em_fontes_classe_unica,abstrativa,24669.0,exp_20260524_221000.log:9
+datas_parseadas,abstrativa (52800 brutos),36586.0,"run_all_v9_aligned.txt (69,3%)"
+tokens_media_classe_verdadeira,abstrativa,96.0,run_all_v9_aligned.txt (length_by_class)
+tokens_media_classe_fake,abstrativa,68.8,run_all_v9_aligned.txt (length_by_class)
+tokens_media_classe_verdadeira,extrativa,107.7,run_all_v9_aligned.txt (length_by_class)
+tokens_media_classe_fake,extrativa,68.8,run_all_v9_aligned.txt (length_by_class)

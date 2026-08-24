@@ -7,11 +7,23 @@ import matplotlib.pyplot as plt
 import numpy as np
 from tqdm.auto import tqdm
 
+from ..config import MAX_LEN
 from ..utils.io_utils import save_plot
 from .attention_rollout import AttentionRollout
 from .integrated_gradients import compute_integrated_gradients
 
 
+def _bert_predict(bert_clf, tokenizer, text: str, device: str) -> int:
+    """Predição do próprio BERTimbau FT (classe-alvo correta para o IG)."""
+    import torch
+
+    enc = tokenizer(
+        text, padding="max_length", truncation=True,
+        max_length=MAX_LEN, return_tensors="pt",
+    ).to(device)
+    with torch.no_grad():
+        logits = bert_clf(enc["input_ids"], enc["attention_mask"])
+    return int(logits.argmax(-1).item())
 
 
 # -- API limpa ----------------------------------------------------------------
@@ -28,13 +40,21 @@ def compare_xai_for_examples(
     top_k: int = 20,
     save_dir: str = "lime",
 ) -> None:
-    """Plota IG e Attention Rollout lado a lado pros mesmos exemplos LIME."""
+    """Plota IG e Attention Rollout lado a lado pros mesmos exemplos LIME.
+
+    `predictions` (predições do modelo que selecionou os alvos, ex.: Ens3)
+    é mantido por compatibilidade de assinatura, mas a classe-alvo do IG é
+    a predição do próprio BERTimbau FT (ver _bert_predict).
+    """
     rollout = AttentionRollout(bert_clf, tokenizer, device=device)
 
     for si, (idx, tag) in enumerate(tqdm(targets[:n_examples], desc="XAI compare")):
         text = X_test[idx]
         true_cls = int(y_test[idx])
-        pred_cls = int(predictions[idx])
+        # Classe-alvo do IG = predição do PRÓPRIO BERTimbau FT (não a do
+        # modelo que selecionou os alvos, ex.: Ens3) — correção da auditoria
+        # de 2026-08; inócuo em células de acerto, relevante para FP/FN.
+        pred_cls = _bert_predict(bert_clf, tokenizer, text, device)
 
         ig_tokens, ig_scores = compute_integrated_gradients(
             text, pred_cls, bert_clf, tokenizer, device=device
@@ -59,7 +79,7 @@ def compare_xai_for_examples(
             ax.set_yticks(range(len(toks_)))
             ax.set_yticklabels(toks_)
             ax.set_title(
-                f"{title} — {tag}\nTrue={class_names[true_cls]} Pred={class_names[pred_cls]}"
+                f"{title} — {tag}\nTrue={class_names[true_cls]} Pred(BERT)={class_names[pred_cls]}"
             )
             ax.axvline(0, color="k", lw=0.5)
             ax.grid(axis="x", alpha=0.3)

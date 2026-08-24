@@ -57,7 +57,9 @@ def mcnemar_pairwise_holm(
         )
     df_mc = pd.DataFrame(rows).sort_values("p").reset_index(drop=True)
     m = len(df_mc)
-    df_mc["p_holm"] = [min((m - i) * df_mc.loc[i, "p"], 1.0) for i in range(m)]
+    # Holm step-down completo: (m-i)*p com máximo cumulativo (monotonicidade).
+    adj = (m - df_mc.index.values) * df_mc["p"].values
+    df_mc["p_holm"] = np.minimum(np.maximum.accumulate(adj), 1.0)
     df_mc[f"sig@{alpha}"] = df_mc["p_holm"] < alpha
 
     if print_table:

@@ -53,11 +53,12 @@ def estimate_n_sentences(
 ) -> int:
     """Estima n_sentences para equalizar comprimento médio das classes.
 
-    Toma o comprimento médio das **reais** (label_enc == 1) e divide por 20
+    Convenção canônica do corpus: 0 = verdadeira (real), 1 = fake.
+    Toma o comprimento médio das **reais** (label_enc == 0) e divide por 20
     (≈ tokens por sentença em PT-BR). Mínimo 2.
     """
-    avg_len_real = df[df[label_col] == 1][text_col].str.split().str.len().mean()
-    avg_len_fake = df[df[label_col] == 0][text_col].str.split().str.len().mean()
+    avg_len_real = df[df[label_col] == 0][text_col].str.split().str.len().mean()
+    avg_len_fake = df[df[label_col] == 1][text_col].str.split().str.len().mean()
     log.info(f"Média tokens — real: {avg_len_real:.0f}, fake: {avg_len_fake:.0f}")
     n_sent = max(2, int(avg_len_real / 20))
     log.info(f"Usando n_sentences={n_sent} para equalizar comprimento.")
@@ -71,10 +72,15 @@ def build_equalized_dataset(
     text_col: str = "text",
     out_col: str = "text_eq",
     out_proc_col: str = "text_eq_proc",
-    fake_label: int = 0,
+    fake_label: int = 1,
     min_length: int = 10,
 ) -> pd.DataFrame:
     """Sumariza o lado fake e re-aplica preprocess_base para versão equalizada.
+
+    Convenção canônica: 0 = verdadeira, 1 = fake. Até 2026-08 o default era
+    fake_label=0, o que sumarizava a classe VERDADEIRA (já sumarizada por
+    construção do corpus) — o run da qualificação foi feito nessa condição e
+    está documentado como "equalização de comprimento" (CHANGELOG §25).
 
     Retorna df com colunas extras `out_col` (texto sumarizado) e
     `out_proc_col` (texto sumarizado + pré-processado), filtrando textos

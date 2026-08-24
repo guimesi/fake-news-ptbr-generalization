@@ -167,7 +167,11 @@ def main() -> int:
         prefix="cm_iid", title_suffix="split IID",
     )
 
-    # McNemar pareado nos modelos principais (sem ensembles ponderados).
+    # McNemar pareado na FAMÍLIA PRÉ-DEFINIDA de 7 configurações (escolha
+    # metodológica declarada no Cap. 4 §4.4 da dissertação: uma por
+    # representação de interesse; 21 pares). PLMs/WEns/BERT[CLS] ficam fora
+    # por definição da família — não mover esta chamada para depois da etapa
+    # 12 sem revisar o protocolo declarado.
     mcnemar_set = (
         "CNN", "LSTM", "ConvLSTM",
         "Ens2 (CNN+LSTM)", "Ens3 (CNN+LSTM+ConvLSTM)",

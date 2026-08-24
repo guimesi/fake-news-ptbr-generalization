@@ -16,6 +16,11 @@ def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--epochs", type=int, default=4)
     p.add_argument("--es-patience", type=int, default=2)
+    p.add_argument(
+        "--seeds", type=int, nargs="+", default=[42, 7],
+        help="Sementes do multi-seed (default [42, 7], igual ao run_all.py; "
+        "a primeira é a principal, usada em CM/bootstrap).",
+    )
     args = p.parse_args()
 
     # PLMs precisam só de textos e labels — não dos embeddings BERTimbau-base
@@ -31,6 +36,7 @@ def main() -> int:
         max_seq_len=ctx.max_seq_len,
         epochs=args.epochs,
         es_patience=args.es_patience,
+        seeds=args.seeds,
         device=ctx.device,
     )
     return 0

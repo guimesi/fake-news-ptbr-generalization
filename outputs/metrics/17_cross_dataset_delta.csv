@@ -1,3 +1,7 @@
-Model,OOD corpus,F1 IID,F1 OOD,ΔF1 (IID-OOD)
-Ens3,Fake.br,0.9624,0.6959,0.2665
-Ens3,Extrativa,0.9624,0.9782,-0.0158
+﻿Model,OOD corpus,Direção,F1 IID,F1 OOD,ΔF1 (IID-OOD)
+Ens3,Fake.br,direta,0.9612,0.6959,0.2653
+BERTimbau FT,Fake.br,direta,0.9621,0.6833,0.2788
+Ens2 (CNN+LSTM),FakeRecogna (teste),inversa,0.9611,0.6883,0.2728
+BERTimbau FT,FakeRecogna (teste),inversa,0.9621,0.6772,0.2849
+Ens3,Extrativa (interna),interna,0.9612,0.9782,-0.017
+BERTimbau FT,Extrativa (interna),interna,0.9621,0.9829,-0.0209

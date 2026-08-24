@@ -150,13 +150,13 @@ FakeRecogna 2.0 é baixado do Hub e o Fake.br-Corpus precisa ser obtido à parte
 │   ├── 02_preprocess_text.py       EDA lexical + embeddings BERTimbau + TF-IDF
 │   ├── 03_train_baselines.py       6 baselines clássicos
 │   ├── 04_train_deep_models.py     CNN/LSTM/ConvLSTM, ensembles e BERTimbau FT
-│   ├── 05_evaluate_models.py       bootstrap, McNemar, calibração, CV, NER masking
+│   ├── 05_evaluate_models.py       bootstrap, McNemar, calibração, CV
 │   ├── 06_statistical_analysis.py  log-odds, Chi quadrado e McNemar
 │   ├── 07_explainability.py        LIME, Integrated Gradients, Attention Rollout
 │   ├── 08_cross_dataset.py         cross-dataset OOD (FakeRecogna para Fake.br)
 │   ├── 09_adversarial_robustness.py  typos, deleção, swap, back-translation
 │   ├── 10_plm_finetune.py          BERTimbau-large, XLM-R, mDeBERTa-v3
-│   ├── 11_paraphrasing_equalizer.py  equalização de estilo e de metatexto
+│   ├── 11_paraphrasing_equalizer.py  equalização por sumarização extrativa e remoção de metatexto
 │   ├── 12_deployment_metrics.py    latência, VRAM, disco, fronteira de Pareto
 │   ├── 13_ablations.py             ablações A, B, D, E e quartil curto
 │   ├── 14_generate_report.py       relatório consolidado (Markdown + JSON)
@@ -404,7 +404,7 @@ Tabelas e relatórios principais (`outputs/metrics/`):
 | `19_adversarial_robustness.csv` | F1 sob typos, deleção, swap e back-translation |
 | `20_larger_models.csv`, `plms_multiseed.csv` | PLMs maiores (BERTimbau-large, XLM-R, mDeBERTa) |
 | `22_deployment_metrics.csv`, `J_disk_sizes_corrected.csv`, `J_parameters_audit.csv` | Latência, VRAM, disco e contagem de parâmetros |
-| `21_paraphrasing_equalizer.csv` | Efeito da equalização de estilo e de metatexto |
+| `21_paraphrasing_equalizer.csv` | Efeito da equalização por sumarização extrativa e remoção de metatexto |
 | `abstrativa_vs_extrativa.csv` | Comparação abstrativa versus extrativa (ablação C) |
 | `04_logodds_*`, `04_chi2_top_abstrativa.csv` | Análise lexical por classe (log-odds e Chi quadrado) |
 | `baselines_multiseed.csv`, `bertimbau_ft_multiseed.csv`, `iid_multiseed.csv` | Agregados multi-seed (média e desvio) |

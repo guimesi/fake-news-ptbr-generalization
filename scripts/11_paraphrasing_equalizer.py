@@ -64,12 +64,14 @@ def main() -> int:
     ctx = prepare_through_features()
     train_deep_ensemble(ctx, epochs=args.epochs)
     baseline = RESULTS["Ens2 (CNN+LSTM)"]
-    rows = [{"Setup": "ORIGINAL", "Accuracy": baseline["Accuracy"], "F1": baseline["F1"]}]
+    # Rótulos alinhados aos da etapa 13 do run_all.py (geradora do CSV oficial).
+    rows = [{"Setup": "ORIGINAL (fake cru, real sumarizado)",
+             "Accuracy": baseline["Accuracy"], "F1": baseline["F1"]}]
 
     if not args.no_paraphrasing:
         df_eq = build_equalized_dataset(ctx.df)
         res = _run_variant(ctx, df_eq, "text_eq_proc", "paraphr", epochs=args.epochs)
-        rows.append({"Setup": "EQUALIZADO (sumarizado)", **res})
+        rows.append({"Setup": "EQUALIZADO (ambos sumarizados)", **res})
 
     if not args.no_metatext:
         df_nm = build_nometatext_dataset(ctx.df)
@@ -77,7 +79,8 @@ def main() -> int:
         rows.append({"Setup": "EQUALIZADO (sem metatexto)", **res})
 
     df = pd.DataFrame(rows).round(4)
-    df["Δ F1"] = df["F1"].diff().fillna(0).round(4)
+    # Δ sempre relativo à linha ORIGINAL (não à linha anterior).
+    df["Δ F1"] = (df["F1"] - df.loc[0, "F1"]).round(4)
     print(tabulate(df, headers="keys", tablefmt="github", showindex=False))
     save_table(df, "21_paraphrasing_equalizer")
     return 0

@@ -16,7 +16,7 @@ robustez adversarial, interpretabilidade e prontidão para deployment.
 |------:|-------------------------------------------------------------|----------------------------------------------------------|
 | 1     | Setup determinístico (seeds, logging, dirs)                | `src/fakerecogna2/{config,utils}`                        |
 | 2     | Carregamento + mapeamento determinístico de colunas        | `src/fakerecogna2/data/loading.py`                       |
-| 3     | Integridade: dedup, fonte, comprimento, NER, temporal      | `src/fakerecogna2/data/integrity_checks.py`              |
+| 3     | Integridade: dedup, fonte, comprimento, temporal           | `src/fakerecogna2/data/integrity_checks.py`              |
 | 4     | EDA lexical: log-odds (Monroe), Chi-square TF-IDF          | `src/fakerecogna2/statistics/log_odds.py`                |
 | 5     | Pré-processamento textual                                  | `src/fakerecogna2/preprocessing/text_cleaning.py`        |
 | 6     | Splits estratificados (train/val/test)                     | `src/fakerecogna2/data/splits.py`                        |
@@ -27,14 +27,14 @@ robustez adversarial, interpretabilidade e prontidão para deployment.
 | 11    | BERTimbau fine-tuned (end-to-end)                          | `src/fakerecogna2/models/bertimbau_finetune.py`          |
 | 12    | Abstrativa vs Extrativa                                    | `src/fakerecogna2/models/ensembles.py`                   |
 | 13    | Bootstrap CI, McNemar+Holm, calibração (ECE/Brier), 5-CV   | `src/fakerecogna2/evaluation/{bootstrap,calibration,cross_validation}.py` + `statistics/significance_tests.py` |
-| 14    | Stress tests: fonte, NER mask, temporal                    | `src/fakerecogna2/evaluation/stress_tests.py`            |
+| 14    | Stress tests: fonte, temporal (NER masking arquivado: era no-op, spaCy com NER desabilitado) | `src/fakerecogna2/evaluation/stress_tests.py`            |
 | 15    | LIME + erros por comprimento/fonte                         | `src/fakerecogna2/explainability/lime_explainer.py`, `evaluation/error_analysis.py` |
 | 16    | Tabela consolidada + gráfico final                         | `src/fakerecogna2/reports/consolidated.py`, `evaluation/plots.py` |
 | 17    | Cross-dataset OOD (FakeRecogna → Fake.br)                  | `src/fakerecogna2/evaluation/cross_dataset.py`           |
 | 18    | XAI gradiente: Integrated Gradients + Attention Rollout    | `src/fakerecogna2/explainability/{integrated_gradients,attention_rollout,comparison}.py` |
 | 19    | Robustez adversarial (perturbações + back-translation)     | `src/fakerecogna2/adversarial/{perturbations,back_translation,runner}.py` |
 | 20    | PLMs maiores (BERTimbau-large, XLM-R, mDeBERTa)            | `src/fakerecogna2/models/plm_finetune.py`                |
-| 21    | Paraphrasing Equalizer                                     | `src/fakerecogna2/preprocessing/paraphrasing.py`         |
+| 21    | Equalização por sumarização extrativa (classe-alvo corrigida em ago/2026; CHANGELOG §25) | `src/fakerecogna2/preprocessing/paraphrasing.py`         |
 | 22    | Métricas de deployment (latência, disco, Pareto)           | `src/fakerecogna2/deployment/benchmarks.py`              |
 | 23    | Relatório consolidado (Markdown + JSON)                    | `src/fakerecogna2/reports/consolidated.py`               |
 | Ablações | Pré-proc, max_len, learning curve, faixa de comprimento, equalizador linguístico, estabilidade XAI, disk size | `src/fakerecogna2/evaluation/ablations.py`, `preprocessing/equalizer.py`, `explainability/stability.py` |

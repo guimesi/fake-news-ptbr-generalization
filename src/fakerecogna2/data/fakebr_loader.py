@@ -67,13 +67,20 @@ def _load_preprocessed_csv(base: Path) -> pd.DataFrame:
         elif cl == "label":
             col_map[c] = "label"
     df = df.rename(columns=col_map)
-    df["label"] = (
+    mapped = (
         df["label"]
         .astype(str)
         .str.lower()
-        .map({"0": "fake", "1": "real", "fake": "fake", "true": "real"})
-        .fillna(df["label"])
+        .map({"fake": "fake", "true": "real", "real": "real"})
     )
+    if mapped.isna().any():
+        unknown = sorted(df["label"].astype(str).str.lower()[mapped.isna()].unique())
+        raise ValueError(
+            "Rótulos não reconhecidos no CSV preprocessed do Fake.br: "
+            f"{unknown}. Mapeie explicitamente (convenção canônica: 0=real, "
+            "1=fake) — nunca assumir polaridade de rótulos numéricos."
+        )
+    df["label"] = mapped
     log.info(f"Fake.br-Corpus (preprocessed CSV): {df.shape}")
     return df[["text", "label"]].dropna()
 
