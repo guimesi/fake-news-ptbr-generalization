@@ -1,5 +1,10 @@
 """Back-translation PT→EN→PT via MarianMT (Seção 19.2, cell 70).
 
+NOTA (auditoria §37): os checkpoints usados são os multilíngues românicos
+`Helsinki-NLP/opus-mt-roa-en` / `opus-mt-en-roa` (com tag de idioma-alvo
+``>>por<<``), e NÃO os pares dedicados pt-en; decodificação com num_beams=2,
+sem cache de traduções, 1 texto por chamada.
+
 Uso típico::
 
     bt = BackTranslator(device="cuda")

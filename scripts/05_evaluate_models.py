@@ -42,12 +42,17 @@ def main() -> int:
         print_classification_report,
     )
     from fakerecogna2.evaluation import plot_final_comparison
-    from fakerecogna2.statistics import mcnemar_pairwise_holm
+    from fakerecogna2.statistics import MCNEMAR_FAMILY, mcnemar_pairwise_holm
 
     bootstrap_table(ctx.y_test, ctx.predictions)
 
-    # 13.2 McNemar
-    mcnemar_pairwise_holm(ctx.y_test, ctx.predictions)
+    # 13.2 McNemar — restrito à família pré-definida de 7 configurações do
+    # protocolo (Cap. 4 §4.4), como no run_all; evita sobrescrever o CSV
+    # oficial com uma família diferente da declarada.
+    mcnemar_pairwise_holm(
+        ctx.y_test,
+        {k: ctx.predictions[k] for k in MCNEMAR_FAMILY if k in ctx.predictions},
+    )
 
     # 13.3 Calibração
     probs_for_cal = {

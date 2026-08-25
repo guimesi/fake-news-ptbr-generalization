@@ -13,6 +13,8 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem import RSLPStemmer
 
+from ..config import MIN_TEXT_LENGTH
+
 URL_RE = re.compile(r"http\S+|www\.\S+")
 MAIL_RE = re.compile(r"\S+@\S+|@\w+")
 NONALPHA_RE = re.compile(r"[^a-záàâãéèêíïóôõúüç\s]")
@@ -24,6 +26,7 @@ NONALPHA_RE = re.compile(r"[^a-záàâãéèêíïóôõúüç\s]")
 _STOPWORDS_PT: set[str] | None = None
 _STEMMER_PT: RSLPStemmer | None = None
 _NLP_PT = None
+_NLP_PT_NER = None
 
 
 def _ensure_nltk_resources() -> None:
@@ -64,6 +67,21 @@ def get_spacy_pt():
     return _NLP_PT
 
 
+def get_spacy_pt_ner():
+    """spaCy `pt_core_news_sm` COM NER habilitado (sem parser), lazy-load.
+
+    Uso: mascaramento de entidades nomeadas (`stress_tests.mask_named_entities`).
+    O pipeline rápido de limpeza (`get_spacy_pt`) mantém o NER desabilitado;
+    até ago/2026 o mascaramento reutilizava esse pipeline e era um no-op
+    silencioso (CHANGELOG §25) — por isso a variante dedicada.
+    """
+    global _NLP_PT_NER
+    if _NLP_PT_NER is None:
+        import spacy
+        _NLP_PT_NER = spacy.load("pt_core_news_sm", disable=["parser"])
+    return _NLP_PT_NER
+
+
 # -- Funções de pré-processamento ---------------------------------------------
 def preprocess_base(text: str) -> str:
     """Lowercase + remoção URLs/emails/não-alfa + stopwords + filtro len>2."""
@@ -100,7 +118,7 @@ def apply_preprocessing(
     text_col: str = "text",
     out_col: str = "text_proc",
     method: str = "base",
-    min_length: int = 10,
+    min_length: int = MIN_TEXT_LENGTH,
 ):
     """Aplica `method` em `df[text_col]`, escreve em `df[out_col]`, filtra textos curtos."""
     from tqdm.auto import tqdm

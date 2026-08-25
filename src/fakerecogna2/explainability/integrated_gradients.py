@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from ..config import MAX_LEN
+from ..config import IG_N_STEPS, MAX_LEN
 from ..utils.logging_utils import get_logger
 
 log = get_logger()
@@ -21,7 +21,7 @@ def compute_integrated_gradients(
     tokenizer,
     device: str = "cpu",
     max_seq_len: int = MAX_LEN,
-    n_steps: int = 50,
+    n_steps: int = IG_N_STEPS,
 ) -> tuple[list[str], np.ndarray]:
     """Integrated Gradients na camada de embeddings do BERTimbau FT.
 

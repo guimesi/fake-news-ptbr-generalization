@@ -17,8 +17,11 @@ from torch.utils.data import DataLoader, TensorDataset
 from tqdm.auto import tqdm
 
 from ..config import BATCH_SIZE
-from ..preprocessing.text_cleaning import get_spacy_pt, preprocess_base
+from ..preprocessing.text_cleaning import get_spacy_pt_ner, preprocess_base
 from ..utils.io_utils import save_table
+from ..utils.logging_utils import get_logger
+
+log = get_logger()
 
 
 
@@ -31,7 +34,7 @@ def mask_named_entities(
     labels: tuple[str, ...] = ("PER", "ORG", "LOC"),
 ) -> str:
     """Substitui entidades nomeadas pelo placeholder `mask`."""
-    nlp = nlp or get_spacy_pt()
+    nlp = nlp or get_spacy_pt_ner()
     doc = nlp(str(text)[:5000])
     out, last = [], 0
     for ent in doc.ents:
@@ -51,10 +54,17 @@ def build_masked_test_loader(
     apply_preprocess: bool = True,
 ) -> DataLoader:
     """Aplica NER masking → preprocess_base → extract_token_embs → DataLoader."""
-    if apply_preprocess:
-        masked = [preprocess_base(mask_named_entities(t)) for t in tqdm(X_test, desc="NER-mask")]
-    else:
-        masked = [mask_named_entities(t) for t in tqdm(X_test, desc="NER-mask")]
+    masked_raw = [mask_named_entities(t) for t in tqdm(X_test, desc="NER-mask")]
+    # Guard-rail: se nenhum texto da amostra inicial recebeu máscara, o NER
+    # provavelmente está desabilitado no pipeline (no-op silencioso — CHANGELOG §25).
+    probe = masked_raw[:200]
+    if probe and not any("[ENT]" in m for m in probe):
+        log.warning(
+            "NER masking não alterou nenhum dos %d primeiros textos — "
+            "verifique se o pipeline spaCy está com NER habilitado "
+            "(get_spacy_pt_ner). O CSV resultante seria um no-op.", len(probe)
+        )
+    masked = [preprocess_base(m) for m in masked_raw] if apply_preprocess else masked_raw
     emb = extractor.extract_token_embs(masked)
     return DataLoader(
         TensorDataset(emb, torch.tensor(np.asarray(y_test), dtype=torch.long)),

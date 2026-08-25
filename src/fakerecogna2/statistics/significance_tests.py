@@ -11,7 +11,16 @@ from tabulate import tabulate
 
 from ..utils.io_utils import save_table
 
-
+# Família PRÉ-DEFINIDA do protocolo de McNemar (Cap. 4 §4.4 da dissertação):
+# uma configuração por representação de interesse — 7 modelos, 21 pares.
+# PLMs/WEns/BERT[CLS] ficam fora por definição da família. Todo caller que
+# grave o CSV oficial (13_mcnemar_pairwise_holm) deve filtrar as predições
+# por esta tupla antes de chamar `mcnemar_pairwise_holm`.
+MCNEMAR_FAMILY: tuple[str, ...] = (
+    "CNN", "LSTM", "ConvLSTM",
+    "Ens2 (CNN+LSTM)", "Ens3 (CNN+LSTM+ConvLSTM)",
+    "BERTimbau FT", "TFIDF+MLP",
+)
 
 
 # -- API limpa ----------------------------------------------------------------

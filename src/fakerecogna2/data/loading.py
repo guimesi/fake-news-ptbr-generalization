@@ -20,7 +20,12 @@ from datasketch import MinHash, MinHashLSH
 from sklearn.preprocessing import LabelEncoder
 from tqdm.auto import tqdm
 
-from ..config import DATASET_HF_ID_TEMPLATE
+from ..config import (
+    DATASET_HF_ID_TEMPLATE,
+    DEDUP_NUM_PERM,
+    DEDUP_SHINGLE_SIZE,
+    DEDUP_THRESHOLD,
+)
 from ..utils.logging_utils import get_logger
 
 log = get_logger()
@@ -124,16 +129,23 @@ def parse_dates(df: pd.DataFrame) -> pd.DataFrame:
 def dedupe(
     df: pd.DataFrame,
     text_col: str = "text",
-    thr: float = 0.85,
-    num_perm: int = 128,
+    thr: float = DEDUP_THRESHOLD,
+    num_perm: int = DEDUP_NUM_PERM,
+    shingle: int = DEDUP_SHINGLE_SIZE,
 ) -> tuple[pd.DataFrame, int, int]:
     """Remove duplicatas exatas (SHA-1) e near-duplicates (MinHashLSH).
+
+    Política de resolução (auditoria §37): a comparação é cega a rótulos e,
+    em cada grupo de quase-duplicatas, sobrevive a primeira ocorrência na
+    ordem do DataFrame (menor índice) — um par com rótulos distintos tem o
+    membro de maior índice removido, sem regra ligada à classe.
 
     Args:
         df: DataFrame com coluna de texto.
         text_col: nome da coluna com texto a comparar.
         thr: limiar Jaccard pra near-duplicate (0.85 = conservador).
         num_perm: nº de permutações do MinHash (128 = bom trade-off).
+        shingle: tamanho dos shingles de caracteres (5).
 
     Returns:
         (df_clean, n_duplicatas_exatas, n_near_duplicates_removidos)
@@ -150,7 +162,7 @@ def dedupe(
     mhs: dict[int, MinHash] = {}
     for i, txt in enumerate(tqdm(df["_clean"], desc="MinHash", leave=False)):
         m = MinHash(num_perm=num_perm)
-        for sh in set(txt[j : j + 5] for j in range(max(0, len(txt) - 4))):
+        for sh in set(txt[j : j + shingle] for j in range(max(0, len(txt) - shingle + 1))):
             m.update(sh.encode("utf-8"))
         mhs[i] = m
         lsh.insert(f"d_{i}", m)

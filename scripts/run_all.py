@@ -169,15 +169,13 @@ def main() -> int:
 
     # McNemar pareado na FAMÍLIA PRÉ-DEFINIDA de 7 configurações (escolha
     # metodológica declarada no Cap. 4 §4.4 da dissertação: uma por
-    # representação de interesse; 21 pares). PLMs/WEns/BERT[CLS] ficam fora
-    # por definição da família — não mover esta chamada para depois da etapa
+    # representação de interesse; 21 pares). A composição vive em
+    # `fakerecogna2.statistics.MCNEMAR_FAMILY` (fonte única, usada também
+    # pelos scripts 05/06) — não mover esta chamada para depois da etapa
     # 12 sem revisar o protocolo declarado.
-    mcnemar_set = (
-        "CNN", "LSTM", "ConvLSTM",
-        "Ens2 (CNN+LSTM)", "Ens3 (CNN+LSTM+ConvLSTM)",
-        "BERTimbau FT", "TFIDF+MLP",
-    )
-    mcnemar_preds = {k: ctx.predictions[k] for k in mcnemar_set if k in ctx.predictions}
+    from fakerecogna2.statistics import MCNEMAR_FAMILY
+
+    mcnemar_preds = {k: ctx.predictions[k] for k in MCNEMAR_FAMILY if k in ctx.predictions}
     mcnemar_pairwise_holm(ctx.y_test, mcnemar_preds)
     # ECE/Brier ESTENDIDO: aplica calibration_table a TODOS os modelos com
     # probabilidades disponiveis (baselines com predict_proba, deep, ensembles,
@@ -564,13 +562,15 @@ def main() -> int:
     # 13. Paraphrasing Equalizer (Seção 21)
     if not skip_paraphr:
         _section("13. Paraphrasing Equalizer")
-        from fakerecogna2.data.splits import make_random_splits
+        from fakerecogna2.data.splits import make_random_splits, official_split_indices
         from fakerecogna2.features import make_loaders
         from fakerecogna2.models import TextCNN, TextLSTM, train_ensemble_on_variant
         from fakerecogna2.preprocessing import build_equalized_dataset
         from fakerecogna2.utils.io_utils import save_table
 
-        df_eq = build_equalized_dataset(ctx.df)
+        # n_sentences estimado apenas sobre o treino do split oficial.
+        idx_tr_eq, _, _ = official_split_indices(ctx.df, seed=ctx.seed)
+        df_eq = build_equalized_dataset(ctx.df, train_idx=idx_tr_eq)
         Xeq_tr, Xeq_vl, Xeq_te, yeq_tr, yeq_vl, yeq_te = make_random_splits(
             df_eq, text_col="text_eq_proc", seed=ctx.seed,
         )

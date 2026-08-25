@@ -29,7 +29,12 @@ def main() -> int:
     )
     args = p.parse_args()
 
-    from fakerecogna2.statistics import chi2_top, lex_analysis, mcnemar_pairwise_holm
+    from fakerecogna2.statistics import (
+        MCNEMAR_FAMILY,
+        chi2_top,
+        lex_analysis,
+        mcnemar_pairwise_holm,
+    )
 
     if args.logodds_only:
         ctx = prepare_through_preprocessing()
@@ -50,7 +55,12 @@ def main() -> int:
     if not args.no_bert:
         train_bert_classifier(ctx)
 
-    mcnemar_pairwise_holm(ctx.y_test, ctx.predictions)
+    # Restrito à família pré-definida de 7 configurações do protocolo
+    # (Cap. 4 §4.4), como no run_all.
+    mcnemar_pairwise_holm(
+        ctx.y_test,
+        {k: ctx.predictions[k] for k in MCNEMAR_FAMILY if k in ctx.predictions},
+    )
     return 0
 
 

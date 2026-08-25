@@ -84,7 +84,10 @@ def run(
             }
 
     if do_equalized:
-        ctx.extras["df_equalized"] = build_equalized_dataset(ctx.df)
+        from ..data.splits import official_split_indices
+
+        idx_tr_eq, _, _ = official_split_indices(ctx.df, seed=ctx.seed)
+        ctx.extras["df_equalized"] = build_equalized_dataset(ctx.df, train_idx=idx_tr_eq)
     if do_nometatext:
         ctx.extras["df_nometatext"] = build_nometatext_dataset(ctx.df)
 

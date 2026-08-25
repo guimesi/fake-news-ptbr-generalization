@@ -24,7 +24,6 @@ import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 from .._context import ExperimentContext
@@ -39,21 +38,14 @@ log = get_logger()
 def _official_split_indices(
     df: pd.DataFrame, seed: int = SEED
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Réplica exata da indexação de `data.splits.make_random_splits`.
+    """Índices do split oficial — delega à fonte única em `data.splits`.
 
-    Mesmos parâmetros (70/10/20, estratificado, mesma seed) ⇒ mesmos índices
-    do split oficial. Necessária porque o pipeline não preserva os índices de
-    treino no ctx (apenas `df_test_meta`).
+    Necessária porque o pipeline não preserva os índices de treino no ctx
+    (apenas `df_test_meta`).
     """
-    idx = np.arange(len(df))
-    y = df["label_enc"].to_numpy()
-    idx_tv, idx_te, y_tv, _ = train_test_split(
-        idx, y, test_size=0.20, stratify=y, random_state=seed
-    )
-    idx_tr, idx_vl, _, _ = train_test_split(
-        idx_tv, y_tv, test_size=0.125, stratify=y_tv, random_state=seed
-    )
-    return idx_tr, idx_vl, idx_te
+    from ..data.splits import official_split_indices
+
+    return official_split_indices(df, seed=seed)
 
 
 def _fit_eval(
@@ -123,7 +115,11 @@ def run_shortcut_probes(
     df = ctx.df
     if df is not None and "category" in df.columns:
         idx_tr, _, idx_te = _official_split_indices(df, seed=ctx.seed)
-        top_cats = df["category"].fillna("outros").value_counts().head(10).index
+        # top-10 categorias escolhidas por frequência APENAS NO TREINO (evita
+        # cruzar a partição mesmo em seleção label-agnóstica).
+        top_cats = (
+            df["category"].iloc[idx_tr].fillna("outros").value_counts().head(10).index
+        )
         cat = df["category"].fillna("outros").where(
             df["category"].fillna("outros").isin(top_cats), "outros"
         )

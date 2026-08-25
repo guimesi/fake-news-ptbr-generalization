@@ -49,14 +49,23 @@ def extractive_summarize(text: str, n_sentences: int = 4) -> str:
 
 
 def estimate_n_sentences(
-    df: pd.DataFrame, label_col: str = "label_enc", text_col: str = "text"
+    df: pd.DataFrame,
+    label_col: str = "label_enc",
+    text_col: str = "text",
+    train_idx=None,
 ) -> int:
     """Estima n_sentences para equalizar comprimento médio das classes.
 
     Convenção canônica do corpus: 0 = verdadeira (real), 1 = fake.
     Toma o comprimento médio das **reais** (label_enc == 0) e divide por 20
     (≈ tokens por sentença em PT-BR). Mínimo 2.
+
+    Args:
+        train_idx: se fornecido, restringe a estimativa às linhas de treino
+            (evita estatística calculada sobre o corpus completo — Cap. 2 §2.1).
     """
+    if train_idx is not None:
+        df = df.iloc[train_idx]
     avg_len_real = df[df[label_col] == 0][text_col].str.split().str.len().mean()
     avg_len_fake = df[df[label_col] == 1][text_col].str.split().str.len().mean()
     log.info(f"Média tokens — real: {avg_len_real:.0f}, fake: {avg_len_fake:.0f}")
@@ -74,6 +83,7 @@ def build_equalized_dataset(
     out_proc_col: str = "text_eq_proc",
     fake_label: int = 1,
     min_length: int = 10,
+    train_idx=None,
 ) -> pd.DataFrame:
     """Sumariza o lado fake e re-aplica preprocess_base para versão equalizada.
 
@@ -89,7 +99,9 @@ def build_equalized_dataset(
     from tqdm.auto import tqdm
 
     if n_sentences is None:
-        n_sentences = estimate_n_sentences(df, label_col=label_col, text_col=text_col)
+        n_sentences = estimate_n_sentences(
+            df, label_col=label_col, text_col=text_col, train_idx=train_idx
+        )
 
     out = df.copy()
     fake_mask = out[label_col] == fake_label

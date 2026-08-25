@@ -8,7 +8,7 @@ from .log_odds import (
     log_odds_dirichlet,
     show_examples_for_term,
 )
-from .significance_tests import mcnemar_pair, mcnemar_pairwise_holm
+from .significance_tests import MCNEMAR_FAMILY, mcnemar_pair, mcnemar_pairwise_holm
 
 __all__ = [
     "log_odds",
@@ -18,6 +18,7 @@ __all__ = [
     "lex_analysis",
     "chi2_top",
     "show_examples_for_term",
+    "MCNEMAR_FAMILY",
     "mcnemar_pair",
     "mcnemar_pairwise_holm",
 ]

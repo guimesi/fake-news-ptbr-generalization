@@ -10,7 +10,7 @@ import pandas as pd
 from tabulate import tabulate
 from tqdm.auto import tqdm
 
-from ..config import ARTIFACTS_DIR, SEED
+from ..config import ARTIFACTS_DIR, LIME_STABILITY_NUM_SAMPLES, SEED
 from ..utils.logging_utils import get_logger
 from .lime_explainer import ProbaPredictor
 
@@ -37,7 +37,9 @@ def lime_stability(
     n_wrong: int = 5,
     k_runs: int = 5,
     top_n: int = 10,
-    num_samples: int = 300,
+    # NOTA (§37): a estabilidade usa 300 perturbações por execução — menos que
+    # as 400 das explicações principais; divergência documentada na Seção 4.6.
+    num_samples: int = LIME_STABILITY_NUM_SAMPLES,
     save_as: str | None = "I_lime_stability",
     seed: int = SEED,
 ) -> pd.DataFrame:

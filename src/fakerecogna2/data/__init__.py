@@ -26,7 +26,12 @@ from .loading import (
     parse_dates,
 )
 from .pipeline import run as run_pipeline
-from .splits import make_random_splits, make_source_splits, make_temporal_splits
+from .splits import (
+    make_random_splits,
+    make_source_splits,
+    make_temporal_splits,
+    official_split_indices,
+)
 
 __all__ = [
     # submódulos
@@ -49,6 +54,7 @@ __all__ = [
     "ner_top_by_class",
     # splits
     "make_random_splits",
+    "official_split_indices",
     "make_temporal_splits",
     "make_source_splits",
     "make_anti_bias_splits",

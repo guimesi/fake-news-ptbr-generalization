@@ -190,7 +190,12 @@ def test_source_class_analysis_no_source_column():
     assert out.empty
 
 
-def test_length_by_class_adds_columns(synth_df):
+def test_length_by_class_adds_columns(synth_df, monkeypatch):
+    # Não gravar a figura sintética em outputs/figures (auditoria §37: o PNG
+    # "03_length_per_class_test.png" renascia a cada pytest).
+    monkeypatch.setattr(
+        "fakerecogna2.data.integrity_checks.save_plot", lambda *a, **k: None
+    )
     df = normalize_schema(synth_df)
     out = length_by_class(df, "Test")
     assert "_n_tokens" in out.columns

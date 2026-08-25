@@ -13,6 +13,23 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 
 
+@pytest.fixture(autouse=True)
+def _preserve_multiseed_cache():
+    """clear_results() também esvazia results_multiseed.json (also_multiseed=True).
+
+    Os testes deste módulo só preservavam results.json, então cada execução do
+    pytest zerava o cache multiseed real. Este fixture faz backup/restauração
+    do arquivo em torno de todos os testes do módulo.
+    """
+    ms_file = ROOT / "outputs" / ".cache" / "results_multiseed.json"
+    backup = ms_file.read_bytes() if ms_file.exists() else None
+    yield
+    if backup is not None:
+        ms_file.write_bytes(backup)
+    elif ms_file.exists():
+        ms_file.unlink()
+
+
 def _run_in_subprocess(code: str, env: dict | None = None) -> str:
     """Roda um snippet Python em subprocesso, retorna stdout."""
     full_env = os.environ.copy()

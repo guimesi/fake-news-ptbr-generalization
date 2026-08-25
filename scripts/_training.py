@@ -116,7 +116,10 @@ def train_deep_ensemble(
             "Inference (ms)": _m0["Inference (ms)"],
         }
 
-    # Refita um modelo da seed principal pra grid search (precisa val_probs)
+    # Refita um modelo da seed principal pra grid search (precisa val_probs).
+    # NOTA (§37): estes refits (seed 42, grid_epochs=15) são proxies dos membros
+    # médios de 3 sementes — os pesos dos WEns são otimizados sobre eles, e
+    # make_predict_ens3 os reutiliza fora do IID (OOD/adversarial/XAI/deploy).
     def _fit(cls, kwargs, seed):
         m = cls(**kwargs)
         m, _ = train_model(
@@ -264,6 +267,12 @@ def make_predict_ens3(ctx: ExperimentContext, batch_size: int = 32):
     """Cria uma função `predict_fn(texts) -> np.ndarray` *batched* do ensemble
     CNN+LSTM+ConvLSTM. Necessário pra evitar OOM em corpora grandes
     (cross-dataset, adversarial). Usa o backbone BERTimbau do `ctx`.
+
+    NOTA (auditoria §37): os membros vêm de `ctx.models` — os refits da seed
+    principal com `grid_epochs` (15) criados para a grade dos WEns —, e NÃO o
+    seed-ensemble de 3 sementes/30 épocas da tabela IID. O "Ens3" fora do IID
+    (OOD, adversarial, LIME, deployment) é, portanto, um comitê single-seed
+    de treino mais curto; assimetria declarada na Seção 4.7 da qualificação.
     """
     if not all(k in ctx.models for k in ("CNN", "LSTM", "ConvLSTM")):
         raise RuntimeError(

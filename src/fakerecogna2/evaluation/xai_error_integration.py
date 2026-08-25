@@ -39,7 +39,8 @@ def build_cell_per_example(
 ) -> np.ndarray:
     """Retorna ndarray de strings 'TP'/'TN'/'FP'/'FN' por exemplo.
 
-    Convencao: classe positiva = `positive_class_idx` (default 0 = fake).
+    Convencao canonica do corpus: 0 = verdadeira, 1 = fake (CHANGELOG §14);
+    `positive_class_idx` define a classe tabulada como positiva (default 0).
     """
     pos = positive_class_idx
     neg = 1 - pos

@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from ..config import BERTIMBAU_MODEL, MAX_LEN
+from ..config import BERTIMBAU_MODEL, MAX_LEN, ROLLOUT_DISCARD_RATIO
 
 
 
@@ -40,7 +40,7 @@ class AttentionRollout:
             self._eager.load_state_dict(bert_clf.bert.state_dict())
 
     def explain(
-        self, text: str, discard_ratio: float = 0.9
+        self, text: str, discard_ratio: float = ROLLOUT_DISCARD_RATIO
     ) -> tuple[list[str], np.ndarray]:
         """Rollout: percorre todas as camadas com identidade + normalização por linha.
 

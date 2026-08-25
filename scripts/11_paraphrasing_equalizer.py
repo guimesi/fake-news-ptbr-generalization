@@ -69,7 +69,11 @@ def main() -> int:
              "Accuracy": baseline["Accuracy"], "F1": baseline["F1"]}]
 
     if not args.no_paraphrasing:
-        df_eq = build_equalized_dataset(ctx.df)
+        from fakerecogna2.data.splits import official_split_indices
+
+        # n_sentences estimado apenas sobre o treino do split oficial.
+        idx_tr_eq, _, _ = official_split_indices(ctx.df, seed=ctx.seed)
+        df_eq = build_equalized_dataset(ctx.df, train_idx=idx_tr_eq)
         res = _run_variant(ctx, df_eq, "text_eq_proc", "paraphr", epochs=args.epochs)
         rows.append({"Setup": "EQUALIZADO (ambos sumarizados)", **res})
 

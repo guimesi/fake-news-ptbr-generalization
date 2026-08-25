@@ -29,9 +29,14 @@ splits:
   val_size: 0.10
 
 models:
-  # CRÍTICO: backbone BERTimbau e hparams do fine-tuning. Não alterar.
+  # CRÍTICO: backbone BERTimbau e MAX_LEN do protocolo. Não alterar.
   bertimbau: "neuralmind/bert-base-portuguese-cased"
   max_len: 200
+  # batch_size abastece redes neurais, embeddings, CV e streaming (32).
+  # ATENÇÃO (auditoria experimental §37): o fine-tuning NÃO lê os campos
+  # abaixo — usa defaults hardcoded nos módulos (lote 16, épocas 10,
+  # lr 2e-5, paciência 3; PLMs: 4 épocas/paciência 2, large com lote 8).
+  # Mantidos aqui como registro documental do protocolo.
   batch_size: 32
   num_epochs: 10
   learning_rate: 2.0e-5
@@ -51,6 +56,22 @@ evaluation:
   reliability_bins: 10
   # Folds da validação cruzada estratificada.
   cv_folds: 5
+
+dedup:
+  # Parâmetros da deduplicação (centralizados na auditoria §37; valores
+  # idênticos aos defaults históricos — comportamento inalterado).
+  threshold: 0.85        # limiar Jaccard do MinHashLSH
+  num_perm: 128          # permutações do MinHash
+  shingle_size: 5        # shingles de caracteres
+  min_text_length: 10    # descarta textos pré-processados com <= N chars
+
+explainability:
+  # Parâmetros de XAI (centralizados na auditoria §37; valores idênticos
+  # aos defaults históricos — comportamento inalterado).
+  lime_num_samples: 400            # perturbações por explicação (LIME)
+  lime_stability_num_samples: 300  # perturbações por execução na estabilidade
+  ig_n_steps: 50                   # passos do Integrated Gradients
+  rollout_discard_ratio: 0.9       # descarte dos menores pesos no Rollout
 
 adversarial:
   # Modelos MarianMT/OPUS-MT para retrotradução PT↔EN.

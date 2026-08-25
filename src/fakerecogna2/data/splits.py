@@ -13,21 +13,48 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import GroupShuffleSplit, train_test_split
 
-from ..config import SEED
+from ..config import SEED, TEST_SIZE, VAL_SIZE
 from ..utils.logging_utils import get_logger
 
 log = get_logger()
 
-
+# Fração de validação sobre treino+val, derivada do YAML (0.10/0.80 = 0.125).
+# round() evita ruído de ponto flutuante que mudaria o ceil() interno do
+# train_test_split em DataFrames pequenos (ex.: testes sintéticos).
+VAL_SIZE_OF_TRAIN: float = round(VAL_SIZE / (1.0 - TEST_SIZE), 10)
 
 
 # -- API limpa ----------------------------------------------------------------
+def official_split_indices(
+    df: pd.DataFrame,
+    label_col: str = "label_enc",
+    test_size: float = TEST_SIZE,
+    val_size_of_train: float = VAL_SIZE_OF_TRAIN,
+    seed: int = SEED,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Índices (train, val, test) do split oficial 70/10/20 estratificado.
+
+    Fonte única da indexação do split oficial: `make_random_splits` e as
+    réplicas externas (sondas de atalho, equalizador) derivam daqui, o que
+    mantém índices e split sempre coerentes se os parâmetros mudarem.
+    """
+    idx = np.arange(len(df))
+    y = df[label_col].to_numpy()
+    idx_tv, idx_te, y_tv, _ = train_test_split(
+        idx, y, test_size=test_size, stratify=y, random_state=seed
+    )
+    idx_tr, idx_vl, _, _ = train_test_split(
+        idx_tv, y_tv, test_size=val_size_of_train, stratify=y_tv, random_state=seed
+    )
+    return idx_tr, idx_vl, idx_te
+
+
 def make_random_splits(
     df: pd.DataFrame,
     text_col: str = "text",
     label_col: str = "label_enc",
-    test_size: float = 0.20,
-    val_size_of_train: float = 0.125,
+    test_size: float = TEST_SIZE,
+    val_size_of_train: float = VAL_SIZE_OF_TRAIN,
     seed: int = SEED,
     return_test_df: bool = False,
 ):
@@ -47,14 +74,12 @@ def make_random_splits(
         (X_train, X_val, X_test, y_train, y_val, y_test)
         ou (..., df_test) se `return_test_df=True`.
     """
-    idx = np.arange(len(df))
+    idx_tr, idx_vl, idx_te = official_split_indices(
+        df, label_col=label_col, test_size=test_size,
+        val_size_of_train=val_size_of_train, seed=seed,
+    )
     y = df[label_col].to_numpy()
-    idx_tv, idx_te, y_tv, y_te = train_test_split(
-        idx, y, test_size=test_size, stratify=y, random_state=seed
-    )
-    idx_tr, idx_vl, y_tr, y_vl = train_test_split(
-        idx_tv, y_tv, test_size=val_size_of_train, stratify=y_tv, random_state=seed
-    )
+    y_tr, y_vl, y_te = y[idx_tr], y[idx_vl], y[idx_te]
     X_tr = df[text_col].iloc[idx_tr].tolist()
     X_vl = df[text_col].iloc[idx_vl].tolist()
     X_te = df[text_col].iloc[idx_te].tolist()

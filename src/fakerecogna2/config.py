@@ -100,6 +100,20 @@ ADV_SWAP_RATE: float = float(_g("adversarial", "swap_rate", default=0.05))
 ADV_PERTURB_SAMPLE_SIZE: int = int(_g("adversarial", "perturb_sample_size", default=500))
 ADV_BT_SAMPLE_SIZE: int = int(_g("adversarial", "bt_sample_size", default=100))
 
+# --- Deduplicação e XAI (centralizados na auditoria §37) --------------------
+DEDUP_THRESHOLD: float = float(_g("dedup", "threshold", default=0.85))
+DEDUP_NUM_PERM: int = int(_g("dedup", "num_perm", default=128))
+DEDUP_SHINGLE_SIZE: int = int(_g("dedup", "shingle_size", default=5))
+MIN_TEXT_LENGTH: int = int(_g("dedup", "min_text_length", default=10))
+LIME_NUM_SAMPLES: int = int(_g("explainability", "lime_num_samples", default=400))
+LIME_STABILITY_NUM_SAMPLES: int = int(
+    _g("explainability", "lime_stability_num_samples", default=300)
+)
+IG_N_STEPS: int = int(_g("explainability", "ig_n_steps", default=50))
+ROLLOUT_DISCARD_RATIO: float = float(
+    _g("explainability", "rollout_discard_ratio", default=0.9)
+)
+
 # --- Diretórios de artefatos ------------------------------------------------
 ARTIFACTS_DIR: Path = Path(_g("paths", "artifacts_dir", default=str(PROJECT_ROOT / "outputs")))
 DATA_RAW_DIR: Path = Path(_g("paths", "data_raw", default=str(PROJECT_ROOT / "data" / "raw")))
@@ -186,6 +200,14 @@ __all__ = [
     "ADV_SWAP_RATE",
     "ADV_PERTURB_SAMPLE_SIZE",
     "ADV_BT_SAMPLE_SIZE",
+    "DEDUP_THRESHOLD",
+    "DEDUP_NUM_PERM",
+    "DEDUP_SHINGLE_SIZE",
+    "MIN_TEXT_LENGTH",
+    "LIME_NUM_SAMPLES",
+    "LIME_STABILITY_NUM_SAMPLES",
+    "IG_N_STEPS",
+    "ROLLOUT_DISCARD_RATIO",
     "ARTIFACTS_DIR",
     "DATA_RAW_DIR",
     "DATA_PROCESSED_DIR",

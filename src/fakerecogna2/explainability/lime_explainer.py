@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 from tqdm.auto import tqdm
 
-from ..config import SEED
+from ..config import LIME_NUM_SAMPLES, SEED
 from ..utils.io_utils import save_plot, save_table
 from ..utils.logging_utils import get_logger
 
@@ -63,7 +63,9 @@ def select_lime_targets_4cells(
     TP/TN/FP/FN.
 
     Args:
-        positive_class_idx: por convencao 0 = fake (classe positiva).
+        positive_class_idx: classe tabulada como positiva nas celulas
+            TP/TN/FP/FN (default 0). Convencao canonica do corpus:
+            0 = verdadeira, 1 = fake (CHANGELOG §14).
         n_per_bucket: quantos exemplos amostrar por celula (4 buckets totais).
 
     Returns:
@@ -158,7 +160,7 @@ def run_lime_explanations(
     class_names: list[str],
     targets: list[tuple[int, str]] | None = None,
     num_features: int = 15,
-    num_samples: int = 400,
+    num_samples: int = LIME_NUM_SAMPLES,
     save_dir: str = "lime",
     save_as: str | None = "15_lime_records",
 ) -> tuple[pd.DataFrame, list[tuple[int, str]]]:
