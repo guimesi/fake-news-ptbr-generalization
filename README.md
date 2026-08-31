@@ -187,7 +187,7 @@ FakeRecogna 2.0 é baixado do Hub e o Fake.br-Corpus precisa ser obtido à parte
 │   ├── deployment/                 benchmarks (latência, VRAM, disco, Pareto, auditoria de parâmetros)
 │   ├── reports/                    consolidated (tabela final, relatório MD e JSON)
 │   └── utils/                      seed, logging_utils, io_utils (PersistentDict), memory
-└── tests/                          pytest (40 testes, cerca de 6 s, offline e sem GPU)
+└── tests/                          pytest (43 testes, cerca de 7 s, offline e sem GPU)
 ```
 
 ### Arquitetura em uma frase
@@ -393,7 +393,6 @@ Tabelas e relatórios principais (`outputs/metrics/`):
 | `13_mcnemar_pairwise_holm.csv` | Teste de McNemar pareado entre modelos, com correção de Holm |
 | `13_calibration.csv` | ECE e Brier por modelo |
 | `13_cross_validation.csv` | Acurácia e F1 por fold (5-fold estratificado) |
-| `14_ner_masking.csv` | Queda de F1 ao mascarar entidades nomeadas (stress test) |
 | `14_source_split.csv`, `14_temporal_split.csv`, `14_anti_bias_split.csv` | Desempenho nos splits OOD por fonte, temporal e anti-viés |
 | `cm_<contexto>_<modelo>_cm.csv` e `_per_class.csv` | Matrizes de confusão e métricas por classe (IID, fonte, temporal, anti-viés, OOD) |
 | `error_distrib_<modelo>_by_{fonte,categoria,year,confidence}.csv` | Distribuição de erros estratificada |
@@ -411,7 +410,7 @@ Tabelas e relatórios principais (`outputs/metrics/`):
 | `xai_err_*` | Integração entre XAI e análise de erros |
 
 Figuras (`outputs/figures/`): heatmaps de matrizes de confusão (`*_cm.png`),
-`13_reliability.png`, `16_final_comparison.png`, `22_pareto_f1_vs_latency.png`,
+`13_reliability.png`, `22_pareto_f1_vs_latency.png`,
 `D_learning_curve.png`, `E_performance_by_length.png`, `03_length_per_class_*.png`,
 `03_temporal_per_class.png`, e as explicações em `outputs/figures/lime/`
 (LIME, IG e Attention Rollout por TP/TN/FP/FN).
